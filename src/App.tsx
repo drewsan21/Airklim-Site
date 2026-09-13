@@ -1,44 +1,161 @@
 import { useState, useEffect } from 'react';
 
-// Navbar Component
-function Navbar() {
-  const [scrolled, setScrolled] = useState(false);
-  const [mobileOpen, setMobileOpen] = useState(false);
+// Image URLs
+const acUnitImg = 'https://images.unsplash.com/photo-1631545308456-7b5e2e990a5e?w=800&h=800&fit=crop&auto=format';
+const acOutdoorImg = 'https://images.unsplash.com/photo-1585771724684-38269d6639fd?w=800&h=800&fit=crop&auto=format';
+const technicianImg = 'https://images.unsplash.com/photo-1621905251189-08b45d6a269e?w=1200&h=800&fit=crop&auto=format';
+const livingRoomImg = 'https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=1200&h=800&fit=crop&auto=format';
+const commercialImg = 'https://images.unsplash.com/photo-1497366216548-37526070297c?w=1200&h=800&fit=crop&auto=format';
+
+// Product SVG Component for consistent product display
+function ProductSVG({ variant = 'indoor' }: { variant?: 'indoor' | 'outdoor' }) {
+  if (variant === 'outdoor') {
+    return (
+      <svg viewBox="0 0 200 200" className="w-full h-full" fill="none">
+        <rect x="30" y="40" width="140" height="120" rx="12" fill="#f1f5f9" stroke="#cbd5e1" strokeWidth="2"/>
+        <rect x="45" y="55" width="110" height="70" rx="6" fill="#e2e8f0"/>
+        <circle cx="100" cy="90" r="25" fill="#cbd5e1" stroke="#94a3b8" strokeWidth="2"/>
+        <circle cx="100" cy="90" r="15" fill="#94a3b8"/>
+        <path d="M85 90 L100 75 L115 90 L100 105 Z" fill="#64748b"/>
+        <rect x="50" y="135" width="100" height="8" rx="4" fill="#cbd5e1"/>
+        <rect x="60" y="148" width="80" height="4" rx="2" fill="#e2e8f0"/>
+      </svg>
+    );
+  }
+  return (
+    <svg viewBox="0 0 200 200" className="w-full h-full" fill="none">
+      <rect x="20" y="60" width="160" height="50" rx="10" fill="#f8fafc" stroke="#cbd5e1" strokeWidth="2"/>
+      <rect x="25" y="65" width="150" height="40" rx="8" fill="white"/>
+      <rect x="35" y="95" width="130" height="3" rx="1.5" fill="#e2e8f0"/>
+      <rect x="35" y="100" width="130" height="3" rx="1.5" fill="#e2e8f0"/>
+      <circle cx="160" cy="80" r="3" fill="#0ea5e9"/>
+      <rect x="20" y="110" width="160" height="5" rx="2.5" fill="#e2e8f0"/>
+      <path d="M40 85 Q100 75 160 85" stroke="#0ea5e9" strokeWidth="1" opacity="0.3"/>
+      <path d="M40 88 Q100 78 160 88" stroke="#0ea5e9" strokeWidth="1" opacity="0.2"/>
+    </svg>
+  );
+}
+
+// Sidebar Component
+function Sidebar() {
+  const [activeSection, setActiveSection] = useState('home');
+
+  const menuItems = [
+    { id: 'home', label: 'Home', icon: '🏠' },
+    { id: 'prodotti', label: 'Prodotti', icon: '📦' },
+    { id: 'chi-siamo', label: 'Chi Siamo', icon: '👥' },
+    { id: 'categorie', label: 'Categorie', icon: '📂' },
+    { id: 'marchi', label: 'Marchi', icon: '⭐' },
+    { id: 'perche-noi', label: 'Perché Noi', icon: '✓' },
+    { id: 'faq', label: 'FAQ', icon: '❓' },
+    { id: 'news', label: 'News', icon: '📰' },
+    { id: 'contatti', label: 'Contatti', icon: '📞' },
+  ];
 
   useEffect(() => {
-    const handleScroll = () => setScrolled(window.scrollY > 50);
+    const handleScroll = () => {
+      const sections = menuItems.map(item => document.getElementById(item.id));
+      const scrollPosition = window.scrollY + 200;
+
+      for (let i = sections.length - 1; i >= 0; i--) {
+        const section = sections[i];
+        if (section && section.offsetTop <= scrollPosition) {
+          setActiveSection(menuItems[i].id);
+          break;
+        }
+      }
+    };
+
     window.addEventListener('scroll', handleScroll);
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
   return (
-    <nav className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${scrolled ? 'bg-slate-900/95 backdrop-blur-md shadow-lg' : 'bg-transparent'}`}>
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="flex items-center justify-between h-20">
+    <aside className="fixed left-0 top-0 h-screen w-64 bg-white border-r border-gray-200 z-50 hidden lg:flex flex-col">
+      {/* Logo */}
+      <div className="p-6 border-b border-gray-100">
+        <div className="flex items-center space-x-3">
+          <div className="w-12 h-12 rounded-xl gradient-blue flex items-center justify-center shadow-lg shadow-sky-500/20">
+            <svg className="w-7 h-7 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9.75 17L9 20l-1 1h8l-1-1-.75-3M3 13h18M5 17h14a2 2 0 002-2V5a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
+            </svg>
+          </div>
+          <div>
+            <div className="text-xl font-bold text-slate-900">AIR<span className="text-sky-500">KLIM</span></div>
+            <div className="text-xs text-slate-500">Climatizzazione Pro</div>
+          </div>
+        </div>
+      </div>
+
+      {/* Navigation */}
+      <nav className="flex-1 overflow-y-auto py-6">
+        <ul className="space-y-1 px-3">
+          {menuItems.map((item) => (
+            <li key={item.id}>
+              <a
+                href={`#${item.id}`}
+                className={`flex items-center px-4 py-3 rounded-xl transition-all duration-200 ${
+                  activeSection === item.id
+                    ? 'bg-sky-50 text-sky-600 font-semibold shadow-sm'
+                    : 'text-slate-600 hover:bg-slate-50 hover:text-slate-900'
+                }`}
+              >
+                <span className="text-xl mr-3">{item.icon}</span>
+                <span className="text-sm">{item.label}</span>
+              </a>
+            </li>
+          ))}
+        </ul>
+      </nav>
+
+      {/* CTA Button */}
+      <div className="p-4 border-t border-gray-100">
+        <a
+          href="#contatti"
+          className="block w-full px-4 py-3 bg-sky-500 hover:bg-sky-600 text-white rounded-xl font-semibold text-center transition-all hover:shadow-lg hover:shadow-sky-500/25"
+        >
+          Registrati Ora
+        </a>
+      </div>
+    </aside>
+  );
+}
+
+// Mobile Menu
+function MobileMenu() {
+  const [isOpen, setIsOpen] = useState(false);
+
+  const menuItems = [
+    { id: 'home', label: 'Home', icon: '🏠' },
+    { id: 'prodotti', label: 'Prodotti', icon: '📦' },
+    { id: 'chi-siamo', label: 'Chi Siamo', icon: '👥' },
+    { id: 'categorie', label: 'Categorie', icon: '📂' },
+    { id: 'marchi', label: 'Marchi', icon: '⭐' },
+    { id: 'perche-noi', label: 'Perché Noi', icon: '✓' },
+    { id: 'faq', label: 'FAQ', icon: '❓' },
+    { id: 'news', label: 'News', icon: '📰' },
+    { id: 'contatti', label: 'Contatti', icon: '📞' },
+  ];
+
+  return (
+    <>
+      {/* Mobile Header */}
+      <div className="lg:hidden fixed top-0 left-0 right-0 bg-white border-b border-gray-200 z-50">
+        <div className="flex items-center justify-between px-4 py-3">
           <div className="flex items-center space-x-2">
             <div className="w-10 h-10 rounded-lg gradient-blue flex items-center justify-center">
               <svg className="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9.75 17L9 20l-1 1h8l-1-1-.75-3M3 13h18M5 17h14a2 2 0 002-2V5a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
               </svg>
             </div>
-            <span className="text-2xl font-bold text-white tracking-tight">AIR<span className="text-sky-400">KLIM</span></span>
+            <span className="text-xl font-bold text-slate-900">AIR<span className="text-sky-500">KLIM</span></span>
           </div>
-          
-          <div className="hidden md:flex items-center space-x-8">
-            <a href="#home" className="text-white/80 hover:text-white transition-colors text-sm font-medium">Home</a>
-            <a href="#prodotti" className="text-white/80 hover:text-white transition-colors text-sm font-medium">Prodotti</a>
-            <a href="#chi-siamo" className="text-white/80 hover:text-white transition-colors text-sm font-medium">Chi Siamo</a>
-            <a href="#marchi" className="text-white/80 hover:text-white transition-colors text-sm font-medium">Marchi</a>
-            <a href="#faq" className="text-white/80 hover:text-white transition-colors text-sm font-medium">FAQ</a>
-            <a href="#contatti" className="text-white/80 hover:text-white transition-colors text-sm font-medium">Contatti</a>
-            <a href="#contatti" className="px-5 py-2.5 bg-sky-500 hover:bg-sky-400 text-white rounded-full text-sm font-semibold transition-all hover:shadow-lg hover:shadow-sky-500/25">
-              Registrati
-            </a>
-          </div>
-          
-          <button onClick={() => setMobileOpen(!mobileOpen)} className="md:hidden text-white p-2">
+          <button
+            onClick={() => setIsOpen(!isOpen)}
+            className="p-2 text-slate-600 hover:text-slate-900"
+          >
             <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              {mobileOpen ? (
+              {isOpen ? (
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
               ) : (
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16" />
@@ -47,21 +164,41 @@ function Navbar() {
           </button>
         </div>
       </div>
-      
-      {mobileOpen && (
-        <div className="md:hidden bg-slate-900/95 backdrop-blur-md border-t border-white/10">
-          <div className="px-4 py-4 space-y-3">
-            <a href="#home" className="block text-white/80 hover:text-white py-2">Home</a>
-            <a href="#prodotti" className="block text-white/80 hover:text-white py-2">Prodotti</a>
-            <a href="#chi-siamo" className="block text-white/80 hover:text-white py-2">Chi Siamo</a>
-            <a href="#marchi" className="block text-white/80 hover:text-white py-2">Marchi</a>
-            <a href="#faq" className="block text-white/80 hover:text-white py-2">FAQ</a>
-            <a href="#contatti" className="block text-white/80 hover:text-white py-2">Contatti</a>
-            <a href="#contatti" className="block px-5 py-2.5 bg-sky-500 text-white rounded-full text-sm font-semibold text-center mt-4">Registrati</a>
+
+      {/* Mobile Menu Overlay */}
+      {isOpen && (
+        <div className="lg:hidden fixed inset-0 bg-black/50 z-40" onClick={() => setIsOpen(false)}>
+          <div className="absolute right-0 top-0 h-full w-72 bg-white shadow-2xl" onClick={(e) => e.stopPropagation()}>
+            <div className="p-6 border-b border-gray-100">
+              <div className="flex items-center justify-between">
+                <span className="text-xl font-bold text-slate-900">Menu</span>
+                <button onClick={() => setIsOpen(false)} className="text-slate-400 hover:text-slate-600">
+                  <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                  </svg>
+                </button>
+              </div>
+            </div>
+            <nav className="p-4">
+              <ul className="space-y-1">
+                {menuItems.map((item) => (
+                  <li key={item.id}>
+                    <a
+                      href={`#${item.id}`}
+                      onClick={() => setIsOpen(false)}
+                      className="flex items-center px-4 py-3 rounded-xl text-slate-600 hover:bg-sky-50 hover:text-sky-600 transition-all"
+                    >
+                      <span className="text-xl mr-3">{item.icon}</span>
+                      <span className="text-sm font-medium">{item.label}</span>
+                    </a>
+                  </li>
+                ))}
+              </ul>
+            </nav>
           </div>
         </div>
       )}
-    </nav>
+    </>
   );
 }
 
@@ -73,14 +210,7 @@ function HeroSection() {
       <div className="absolute inset-0">
         <div className="absolute top-20 left-10 w-72 h-72 bg-sky-500/10 rounded-full blur-3xl animate-pulse-slow"></div>
         <div className="absolute bottom-20 right-10 w-96 h-96 bg-blue-500/10 rounded-full blur-3xl animate-pulse-slow" style={{animationDelay: '2s'}}></div>
-        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[800px] h-[800px] bg-sky-400/5 rounded-full blur-3xl"></div>
       </div>
-      
-      {/* Grid pattern overlay */}
-      <div className="absolute inset-0 opacity-[0.03]" style={{
-        backgroundImage: 'linear-gradient(rgba(255,255,255,.1) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,.1) 1px, transparent 1px)',
-        backgroundSize: '60px 60px'
-      }}></div>
       
       <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-32">
         <div className="grid lg:grid-cols-2 gap-12 items-center">
@@ -129,43 +259,22 @@ function HeroSection() {
             </div>
           </div>
           
-          <div className="hidden lg:flex justify-center">
+          <div className="hidden lg:block">
             <div className="relative">
-              <div className="w-80 h-80 rounded-3xl gradient-card flex items-center justify-center animate-float">
-                <div className="text-center space-y-4">
-                  <div className="w-20 h-20 mx-auto rounded-2xl bg-sky-500/20 flex items-center justify-center">
-                    <svg className="w-10 h-10 text-sky-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M9.75 17L9 20l-1 1h8l-1-1-.75-3M3 13h18M5 17h14a2 2 0 002-2V5a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
-                    </svg>
-                  </div>
-                  <div className="text-white font-semibold text-lg">nanoe™ X</div>
-                  <div className="text-white/50 text-sm">Igiene continua<br/>Comfort garantito</div>
-                </div>
-              </div>
-              
+              <img 
+                src={technicianImg} 
+                alt="Tecnico HVAC professionale" 
+                className="rounded-3xl shadow-2xl animate-float"
+              />
               <div className="absolute -top-6 -right-6 w-24 h-24 rounded-2xl glass-card flex items-center justify-center animate-float-delayed">
                 <div className="text-center">
                   <div className="text-2xl font-bold text-sky-400">99%</div>
                   <div className="text-[10px] text-white/50">Batteri Eliminati</div>
                 </div>
               </div>
-              
-              <div className="absolute -bottom-4 -left-8 w-28 h-28 rounded-2xl glass-card flex items-center justify-center animate-float" style={{animationDelay: '1s'}}>
-                <div className="text-center">
-                  <div className="text-sky-400 text-lg">🌡️</div>
-                  <div className="text-[10px] text-white/50 mt-1">Pronta Consegna</div>
-                </div>
-              </div>
             </div>
           </div>
         </div>
-      </div>
-      
-      {/* Bottom wave */}
-      <div className="absolute bottom-0 left-0 right-0">
-        <svg viewBox="0 0 1440 100" fill="none" className="w-full">
-          <path d="M0 50L48 45C96 40 192 30 288 35C384 40 480 60 576 65C672 70 768 60 864 50C960 40 1056 30 1152 35C1248 40 1344 60 1392 70L1440 80V100H0V50Z" fill="white"/>
-        </svg>
       </div>
     </section>
   );
@@ -216,9 +325,6 @@ function AboutSection() {
             <p className="text-slate-600 leading-relaxed">
               Offriamo prodotti di alta qualità e dalle elevate prestazioni, selezionati tra i migliori marchi del settore. La nostra esperienza e la professionalità del nostro team ci permettono di accompagnarti in ogni fase: dalla consulenza alla scelta dell'impianto più adatto, fino all'assistenza post-vendita.
             </p>
-            <p className="text-slate-600 leading-relaxed">
-              Affidabilità, serietà e supporto continuo fanno di AIRKLIM il partner ideale per chi desidera migliorare il comfort della propria casa o del proprio luogo di lavoro con soluzioni moderne, efficienti e durature.
-            </p>
             
             <div className="grid grid-cols-3 gap-4 pt-4">
               <div className="p-4 rounded-xl bg-slate-50 text-center">
@@ -237,27 +343,11 @@ function AboutSection() {
           </div>
           
           <div className="relative">
-            <div className="rounded-3xl overflow-hidden bg-gradient-to-br from-slate-100 to-sky-50 p-8 aspect-square flex items-center justify-center">
-              <div className="relative w-full h-full rounded-2xl bg-white shadow-xl flex items-center justify-center">
-                <div className="text-center space-y-6 p-8">
-                  <div className="w-24 h-24 mx-auto rounded-full bg-gradient-to-br from-sky-400 to-blue-600 flex items-center justify-center shadow-lg shadow-sky-500/30">
-                    <svg className="w-12 h-12 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M13 10V3L4 14h7v7l9-11h-7z" />
-                    </svg>
-                  </div>
-                  <div>
-                    <h3 className="text-xl font-bold text-slate-900">Alta Efficienza Energetica</h3>
-                    <p className="text-slate-500 mt-2">Soluzioni innovative per il risparmio energetico e il massimo comfort</p>
-                  </div>
-                  <div className="flex justify-center gap-3">
-                    <span className="px-3 py-1 bg-sky-50 text-sky-600 rounded-full text-xs font-medium">Residenziale</span>
-                    <span className="px-3 py-1 bg-sky-50 text-sky-600 rounded-full text-xs font-medium">Commerciale</span>
-                    <span className="px-3 py-1 bg-sky-50 text-sky-600 rounded-full text-xs font-medium">Industriale</span>
-                  </div>
-                </div>
-              </div>
-            </div>
-            
+            <img 
+              src={livingRoomImg} 
+              alt="Soggiorno moderno con climatizzazione" 
+              className="rounded-3xl shadow-xl"
+            />
             <div className="absolute -bottom-4 -right-4 w-32 h-32 bg-sky-100 rounded-2xl -z-10"></div>
             <div className="absolute -top-4 -left-4 w-24 h-24 bg-blue-100 rounded-2xl -z-10"></div>
           </div>
@@ -292,12 +382,8 @@ function ProductsSection() {
         <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
           {products.map((product, i) => (
             <div key={i} className="group bg-white rounded-2xl p-6 shadow-sm hover:shadow-xl transition-all duration-300 hover:-translate-y-1 border border-gray-100">
-              <div className="aspect-square rounded-xl bg-gradient-to-br from-slate-50 to-sky-50 flex items-center justify-center mb-5 group-hover:from-sky-50 group-hover:to-blue-50 transition-colors">
-                <div className="w-20 h-20 rounded-2xl bg-white shadow-md flex items-center justify-center group-hover:scale-110 transition-transform">
-                  <svg className="w-10 h-10 text-sky-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M9.75 17L9 20l-1 1h8l-1-1-.75-3M3 13h18M5 17h14a2 2 0 002-2V5a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
-                  </svg>
-                </div>
+              <div className="aspect-square rounded-xl bg-gradient-to-br from-slate-50 to-sky-50 flex items-center justify-center mb-5 group-hover:from-sky-50 group-hover:to-blue-50 transition-colors overflow-hidden p-8">
+                <ProductSVG variant={i % 2 === 0 ? 'indoor' : 'outdoor'} />
               </div>
               
               <div className="space-y-3">
@@ -331,16 +417,16 @@ function ProductsSection() {
 // Categories Section
 function CategoriesSection() {
   const categories = [
-    { name: 'Linea Residenziale', icon: '🏠', desc: 'Climatizzatori per la casa' },
-    { name: 'Linea Commerciale', icon: '🏢', desc: 'Soluzioni per uffici e negozi' },
-    { name: 'Pompe di Calore', icon: '🔥', desc: 'Aquarea - Efficienza massima' },
-    { name: 'Sistemi VRF', icon: '🏗️', desc: 'Per grandi strutture' },
-    { name: 'Chiller e Rooftop', icon: '❄️', desc: 'Raffreddamento industriale' },
-    { name: 'Accessori', icon: '🔧', desc: 'Tutto per l\'installazione' },
+    { name: 'Linea Residenziale', icon: '🏠', desc: 'Climatizzatori per la casa', image: livingRoomImg },
+    { name: 'Linea Commerciale', icon: '🏢', desc: 'Soluzioni per uffici e negozi', image: commercialImg },
+    { name: 'Pompe di Calore', icon: '🔥', desc: 'Aquarea - Efficienza massima', image: acOutdoorImg },
+    { name: 'Sistemi VRF', icon: '🏗️', desc: 'Per grandi strutture', image: commercialImg },
+    { name: 'Chiller e Rooftop', icon: '❄️', desc: 'Raffreddamento industriale', image: acOutdoorImg },
+    { name: 'Accessori', icon: '🔧', desc: 'Tutto per l\'installazione', image: acUnitImg },
   ];
 
   return (
-    <section className="py-24 bg-white">
+    <section id="categorie" className="py-24 bg-white">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="text-center mb-16">
           <span className="text-sky-500 font-semibold text-sm uppercase tracking-wider">Catalogo</span>
@@ -352,14 +438,17 @@ function CategoriesSection() {
         
         <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
           {categories.map((cat, i) => (
-            <div key={i} className="group relative p-8 rounded-2xl border border-gray-100 hover:border-sky-200 bg-white hover:bg-gradient-to-br hover:from-sky-50 hover:to-white transition-all duration-300 cursor-pointer hover:shadow-lg hover:shadow-sky-500/5">
-              <div className="text-4xl mb-4">{cat.icon}</div>
-              <h3 className="text-lg font-bold text-slate-900 group-hover:text-sky-600 transition-colors">{cat.name}</h3>
-              <p className="text-slate-500 text-sm mt-2">{cat.desc}</p>
-              <div className="absolute top-8 right-8 opacity-0 group-hover:opacity-100 transition-opacity">
-                <svg className="w-5 h-5 text-sky-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 8l4 4m0 0l-4 4m4-4H3" />
-                </svg>
+            <div key={i} className="group relative overflow-hidden rounded-2xl border border-gray-100 hover:border-sky-200 hover:shadow-xl transition-all duration-300 cursor-pointer">
+              <div className="aspect-video relative overflow-hidden bg-gradient-to-br from-slate-100 to-sky-50">
+                <div className="absolute inset-0 flex items-center justify-center p-8 opacity-30 group-hover:opacity-50 transition-opacity">
+                  <ProductSVG variant={i % 2 === 0 ? 'indoor' : 'outdoor'} />
+                </div>
+                <div className="absolute inset-0 bg-gradient-to-t from-slate-900/80 to-transparent"></div>
+              </div>
+              <div className="absolute bottom-0 left-0 right-0 p-6 text-white">
+                <div className="text-3xl mb-2">{cat.icon}</div>
+                <h3 className="text-xl font-bold mb-1">{cat.name}</h3>
+                <p className="text-white/80 text-sm">{cat.desc}</p>
               </div>
             </div>
           ))}
@@ -444,7 +533,7 @@ function WhyChooseSection() {
   ];
 
   return (
-    <section className="py-24 bg-white">
+    <section id="perche-noi" className="py-24 bg-white">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="text-center mb-16">
           <span className="text-sky-500 font-semibold text-sm uppercase tracking-wider">I Nostri Plus</span>
@@ -576,24 +665,27 @@ function NewsSection() {
       title: 'Conto Termico 3.0 – La guida completa di Airklim',
       desc: 'La guida completa per accedere alla nuova agevolazione per la sostituzione del tuo impianto di condizionamento.',
       date: '15 Dicembre 2025',
-      category: 'Novità'
+      category: 'Novità',
+      image: livingRoomImg
     },
     {
       title: 'Come Scegliere il Climatizzatore Giusto',
       desc: 'Guida per professionisti e imprese. Scegliere il giusto climatizzatore non è solo una questione di prezzo.',
       date: '12 Febbraio 2025',
-      category: 'Climatizzazione'
+      category: 'Climatizzazione',
+      image: commercialImg
     },
     {
       title: 'Manutenzione e Assistenza',
       desc: 'Perché un climatizzatore di qualità deve essere seguito nel tempo per garantire efficienza e durata.',
       date: '12 Gennaio 2025',
-      category: 'Climatizzazione'
+      category: 'Climatizzazione',
+      image: technicianImg
     },
   ];
 
   return (
-    <section className="py-24 bg-white">
+    <section id="news" className="py-24 bg-white">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="text-center mb-16">
           <span className="text-sky-500 font-semibold text-sm uppercase tracking-wider">Blog & News</span>
@@ -604,18 +696,24 @@ function NewsSection() {
         <div className="grid md:grid-cols-3 gap-8">
           {articles.map((article, i) => (
             <article key={i} className="group cursor-pointer">
-              <div className="aspect-video rounded-2xl bg-gradient-to-br from-slate-100 to-sky-50 mb-5 flex items-center justify-center overflow-hidden group-hover:shadow-lg transition-all">
-                <div className="text-center p-6">
-                  <div className="w-12 h-12 mx-auto rounded-xl bg-white shadow-sm flex items-center justify-center mb-3">
-                    <svg className="w-6 h-6 text-sky-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M19 20H5a2 2 0 01-2-2V6a2 2 0 012-2h10a2 2 0 012 2v1m2 13a2 2 0 01-2-2V7m2 13a2 2 0 002-2V9a2 2 0 00-2-2h-2m-4-3H9M7 16h6M7 8h6v4H7V8z" />
-                    </svg>
-                  </div>
-                  <span className="text-xs text-slate-500">{article.category}</span>
-                </div>
+              <div className="aspect-video rounded-2xl overflow-hidden mb-5 relative">
+                <img 
+                  src={article.image} 
+                  alt={article.title}
+                  className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
+                  onError={(e) => {
+                    const target = e.target as HTMLImageElement;
+                    target.style.display = 'none';
+                    target.parentElement!.classList.add('bg-gradient-to-br', 'from-sky-100', 'to-blue-50');
+                  }}
+                />
+                <div className="absolute inset-0 bg-gradient-to-t from-slate-900/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity"></div>
               </div>
               <div className="space-y-2">
-                <div className="text-xs text-slate-400">{article.date}</div>
+                <div className="flex items-center gap-2">
+                  <span className="text-xs font-medium text-sky-600 bg-sky-50 px-2 py-1 rounded-full">{article.category}</span>
+                  <span className="text-xs text-slate-400">{article.date}</span>
+                </div>
                 <h3 className="font-bold text-slate-900 group-hover:text-sky-600 transition-colors text-lg">{article.title}</h3>
                 <p className="text-slate-500 text-sm leading-relaxed">{article.desc}</p>
                 <span className="inline-flex items-center text-sky-600 text-sm font-medium group-hover:gap-2 gap-1 transition-all">
@@ -802,19 +900,27 @@ function Footer() {
 export default function App() {
   return (
     <div className="min-h-screen">
-      <Navbar />
-      <HeroSection />
-      <FeaturesBanner />
-      <AboutSection />
-      <ProductsSection />
-      <CategoriesSection />
-      <BrandsSection />
-      <WhyChooseSection />
-      <CTASection />
-      <FAQSection />
-      <NewsSection />
-      <ContactSection />
-      <Footer />
+      {/* Desktop Sidebar */}
+      <Sidebar />
+      
+      {/* Mobile Menu */}
+      <MobileMenu />
+      
+      {/* Main Content */}
+      <main className="lg:ml-64">
+        <HeroSection />
+        <FeaturesBanner />
+        <AboutSection />
+        <ProductsSection />
+        <CategoriesSection />
+        <BrandsSection />
+        <WhyChooseSection />
+        <CTASection />
+        <FAQSection />
+        <NewsSection />
+        <ContactSection />
+        <Footer />
+      </main>
     </div>
   );
 }
