@@ -25,6 +25,7 @@ import { EmailAutomationSystem, AnalyticsDashboard } from './Analytics';
 import { useWebVitals, preloadCriticalResources } from './Performance';
 import { NPSSurvey, FeedbackWidget, UsabilityTestRecorder } from './UXResearch';
 import { ErrorBoundary, useErrorHandler, usePerformanceMonitoring, UptimeMonitor, ErrorLogViewer } from './ErrorTracking';
+import { securityMiddleware } from './security';
 
 // ===== LIFESTYLE IMAGES =====
 const heroBg = 'https://images.unsplash.com/photo-1600585154340-be6161a56a0c?w=1920&h=1080&fit=crop&auto=format';
@@ -964,6 +965,12 @@ export default function App() {
   usePerformanceMonitoring();
   useWebVitals();
   preloadCriticalResources();
+  
+  // Security Middleware Initialization
+  useEffect(() => {
+    securityMiddleware.initialize();
+    console.log('[SECURITY] Security middleware initialized');
+  }, []);
 
   const showToast = useCallback((message: string) => {
     setToast({ message, visible: true });
