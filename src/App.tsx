@@ -26,6 +26,10 @@ import { useWebVitals, preloadCriticalResources } from './Performance';
 import { NPSSurvey, FeedbackWidget, UsabilityTestRecorder } from './UXResearch';
 import { ErrorBoundary, useErrorHandler, usePerformanceMonitoring, UptimeMonitor, ErrorLogViewer } from './ErrorTracking';
 import { securityMiddleware } from './security';
+import { ManagementLogin } from './management/ManagementLogin';
+import { ManagementDashboard } from './management/ManagementDashboard';
+import { useAdminAuth } from './management/hooks/useAdminAuth';
+import { initializeTestAccounts } from './config/testAccounts';
 
 // ===== LIFESTYLE IMAGES =====
 const heroBg = 'https://images.unsplash.com/photo-1600585154340-be6161a56a0c?w=1920&h=1080&fit=crop&auto=format';
@@ -959,6 +963,26 @@ export default function App() {
   const [cartOpen, setCartOpen] = useState(false);
   const { user } = useAuth();
   const { itemCount } = useCart();
+  const { admin } = useAdminAuth();
+  const [isAdminRoute, setIsAdminRoute] = useState(window.location.hash === '#admin');
+  
+  // Admin routing
+  useEffect(() => {
+    const handleHashChange = () => {
+      setIsAdminRoute(window.location.hash === '#admin');
+    };
+    
+    window.addEventListener('hashchange', handleHashChange);
+    return () => window.removeEventListener('hashchange', handleHashChange);
+  }, []);
+  
+  // Se siamo nella route admin, mostra solo il management system
+  if (isAdminRoute) {
+    if (!admin) {
+      return <ManagementLogin onLoginSuccess={() => window.location.hash = '#admin'} />;
+    }
+    return <ManagementDashboard />;
+  }
   
   // Phase 5: Performance & Monitoring Hooks
   useErrorHandler();
@@ -969,7 +993,9 @@ export default function App() {
   // Security Middleware Initialization
   useEffect(() => {
     securityMiddleware.initialize();
+    initializeTestAccounts();
     console.log('[SECURITY] Security middleware initialized');
+    console.log('[TEST] Test accounts initialized');
   }, []);
 
   const showToast = useCallback((message: string) => {
