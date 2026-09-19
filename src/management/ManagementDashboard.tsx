@@ -10,6 +10,7 @@ import { UsersManagement } from './sections/UsersManagement';
 import { OrdersManagement } from './sections/OrdersManagement';
 import { ProductsManagement } from './sections/ProductsManagement';
 import { ContentManagement } from './sections/ContentManagement';
+import { AnalyticsManagement } from './sections/AnalyticsManagement';
 import { AdminSection } from '../types/admin';
 
 export function ManagementDashboard() {
@@ -90,15 +91,7 @@ export function ManagementDashboard() {
           {activeSection === 'products' && <ProductsManagement />}
           {activeSection === 'content' && <ContentManagement />}
 
-          {activeSection === 'analytics' && (
-            <div>
-              <h1 className="text-3xl font-bold text-white mb-2">Analytics</h1>
-              <p className="text-white/50">Statistiche avanzate e report</p>
-              <div className="mt-8 p-8 rounded-2xl bg-white/5 border border-white/10 text-center">
-                <p className="text-white/60">Sezione in sviluppo...</p>
-              </div>
-            </div>
-          )}
+          {activeSection === 'analytics' && <AnalyticsManagement />}
 
           {activeSection === 'audit' && (
             <div>
