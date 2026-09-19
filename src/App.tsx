@@ -19,6 +19,8 @@ import { TestimonialsSection } from './TestimonialsSection';
 import { GallerySection } from './GallerySection';
 import { AuthModal, CartSidebar, UserDashboard } from './Commerce';
 import { useAuth, useCart } from './hooks';
+import { LeadMagnetSection, SmartPopupSystem, NewsletterSection, SocialSharing } from './Marketing';
+import { LanguageProvider, LanguageSwitcher } from './LanguageContext';
 
 // ===== LIFESTYLE IMAGES =====
 const heroBg = 'https://images.unsplash.com/photo-1600585154340-be6161a56a0c?w=1920&h=1080&fit=crop&auto=format';
@@ -976,11 +978,13 @@ export default function App() {
   };
 
   return (
+    <LanguageProvider>
     <div className="min-h-screen bg-black text-white">
       <Sidebar onPrivatiSignup={() => setPrivatiSignup(true)} onProfessionistiSignup={() => setProfessionistiSignup(true)} />
       <MobileMenu onPrivatiSignup={() => setPrivatiSignup(true)} onProfessionistiSignup={() => setProfessionistiSignup(true)} />
       <BackToTop />
       <Toast message={toast.message} isVisible={toast.visible} />
+      <LanguageSwitcher />
 
       <main className="lg:ml-64">
         <HeroSection />
@@ -1011,6 +1015,10 @@ export default function App() {
         <VideoSection />
         <TestimonialsSection />
         <GallerySection />
+        
+        {/* Phase 4: Marketing & Growth */}
+        <LeadMagnetSection />
+        <NewsletterSection />
         
         {/* Phase 3: Backend & Commerce */}
         {user && <UserDashboard />}
@@ -1064,9 +1072,12 @@ export default function App() {
       {/* WhatsApp Button */}
       <WhatsAppButton />
 
+      {/* Phase 4: Marketing Components */}
+      <SmartPopupSystem />
+      <SocialSharing />
+ 
       {/* Cookie Banner */}
       <CookieBanner />
-
       {/* Signup Modals */}
       <PrivatiSignupModal isOpen={privatiSignup} onClose={() => setPrivatiSignup(false)} showToast={showToast} />
       <ProfessionistiSignupModal isOpen={professionistiSignup} onClose={() => setProfessionistiSignup(false)} showToast={showToast} />
@@ -1109,5 +1120,6 @@ export default function App() {
         )}
       </Modal>
     </div>
+    </LanguageProvider>
   );
 }
