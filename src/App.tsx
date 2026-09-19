@@ -142,7 +142,7 @@ function BackToTop() {
 }
 
 // ===== SIDEBAR =====
-function Sidebar() {
+function Sidebar({ onPrivatiSignup, onProfessionistiSignup }: { onPrivatiSignup: () => void; onProfessionistiSignup: () => void }) {
   const [active, setActive] = useState('home');
   const items = [
     { id: 'home', label: 'Home', icon: '🏠' },
@@ -194,16 +194,16 @@ function Sidebar() {
           ))}
         </ul>
       </nav>
-      <div className="p-4 border-t border-white/5">
-        <a href="#contatti" className="block w-full px-4 py-3 bg-sky-500 hover:bg-sky-400 text-white rounded-xl font-semibold text-center transition-all hover:shadow-lg hover:shadow-sky-500/25 text-sm">Registrati per Acquistare</a>
-        <p className="text-center text-[10px] text-white/30 mt-2">Area riservata professionisti</p>
+      <div className="p-4 border-t border-white/5 space-y-2">
+        <button onClick={onPrivatiSignup} className="block w-full px-4 py-2.5 bg-sky-500 hover:bg-sky-400 text-white rounded-xl font-semibold text-center transition-all hover:shadow-lg hover:shadow-sky-500/25 text-sm">🏠 Area Privati</button>
+        <button onClick={onProfessionistiSignup} className="block w-full px-4 py-2.5 bg-amber-500 hover:bg-amber-400 text-white rounded-xl font-semibold text-center transition-all hover:shadow-lg hover:shadow-amber-500/25 text-sm">🏢 Area Professionisti</button>
       </div>
     </aside>
   );
 }
 
 // ===== MOBILE MENU =====
-function MobileMenu() {
+function MobileMenu({ onPrivatiSignup, onProfessionistiSignup }: { onPrivatiSignup: () => void; onProfessionistiSignup: () => void }) {
   const [isOpen, setIsOpen] = useState(false);
   const items = [
     { id: 'home', label: 'Home', icon: '🏠' },
@@ -242,6 +242,10 @@ function MobileMenu() {
             </div>
             <nav className="p-4">
               <ul className="space-y-1">{items.map((item) => (<li key={item.id}><a href={`#${item.id}`} onClick={() => setIsOpen(false)} className="flex items-center px-4 py-3 rounded-xl text-white/60 hover:bg-white/5 hover:text-white transition-all"><span className="text-lg mr-3">{item.icon}</span><span className="text-sm font-medium">{item.label}</span></a></li>))}</ul>
+              <div className="mt-4 space-y-2">
+                <button onClick={() => { setIsOpen(false); onPrivatiSignup(); }} className="block w-full px-4 py-3 bg-sky-500 hover:bg-sky-400 text-white rounded-xl font-semibold text-center transition-all text-sm">🏠 Area Privati</button>
+                <button onClick={() => { setIsOpen(false); onProfessionistiSignup(); }} className="block w-full px-4 py-3 bg-amber-500 hover:bg-amber-400 text-white rounded-xl font-semibold text-center transition-all text-sm">🏢 Area Professionisti</button>
+              </div>
             </nav>
           </div>
         </div>
@@ -651,6 +655,13 @@ function Footer({ onNavigate }: { onNavigate: (s: string) => void }) {
             </ul>
           </div>
           <div>
+            <h4 className="font-semibold text-white mb-4">Registrazione</h4>
+            <ul className="space-y-2 text-sm text-white/40">
+              <li><button onClick={() => onNavigate('privati')} className="hover:text-sky-400 transition-colors text-left">🏠 Area Privati</button></li>
+              <li><button onClick={() => onNavigate('professionisti')} className="hover:text-amber-400 transition-colors text-left">🏢 Area Professionisti</button></li>
+            </ul>
+          </div>
+          <div>
             <h4 className="font-semibold text-white mb-4">Contatti</h4>
             <ul className="space-y-2 text-sm text-white/40"><li>Via Ciachea, 2/e</li><li>90044 Carini (PA)</li><li>Tel. +39 091 8691680</li></ul>
           </div>
@@ -668,10 +679,236 @@ function Footer({ onNavigate }: { onNavigate: (s: string) => void }) {
   );
 }
 
+// ===== PROFILE CHOICE SECTION =====
+function ProfileChoiceSection({ onPrivatiSignup, onProfessionistiSignup }: { onPrivatiSignup: () => void; onProfessionistiSignup: () => void }) {
+  return (
+    <section className="py-20 bg-gradient-to-b from-black to-slate-950">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="text-center mb-12">
+          <h2 className="text-3xl sm:text-4xl font-bold text-white mb-4">Scegli il Tuo Profilo</h2>
+          <p className="text-white/60 text-lg">Seleziona l'area dedicata per accedere a prodotti e servizi su misura per te</p>
+        </div>
+        
+        <div className="grid md:grid-cols-2 gap-8 max-w-5xl mx-auto">
+          {/* Privati Card */}
+          <div className="group relative overflow-hidden rounded-3xl bg-gradient-to-br from-sky-500/10 to-blue-600/10 border border-sky-500/20 hover:border-sky-500/40 transition-all duration-300 hover:-translate-y-2">
+            <div className="absolute inset-0 bg-gradient-to-br from-sky-500/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity"></div>
+            <div className="relative p-8 space-y-6">
+              <div className="w-16 h-16 rounded-2xl bg-sky-500/20 flex items-center justify-center">
+                <svg className="w-8 h-8 text-sky-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6" />
+                </svg>
+              </div>
+              <div>
+                <h3 className="text-2xl font-bold text-white mb-2">Privati</h3>
+                <p className="text-white/60">Sei un privato cittadino? Accedi a prodotti residenziali, pompe di calore e soluzioni per il comfort domestico.</p>
+              </div>
+              <ul className="space-y-2 text-sm text-white/50">
+                <li className="flex items-center gap-2"><span className="text-sky-400">✓</span> Climatizzatori residenziali</li>
+                <li className="flex items-center gap-2"><span className="text-sky-400">✓</span> Pompe di calore Aquarea</li>
+                <li className="flex items-center gap-2"><span className="text-sky-400">✓</span> Assistenza tecnica</li>
+                <li className="flex items-center gap-2"><span className="text-sky-400">✓</span> Prezzi al pubblico</li>
+              </ul>
+              <button onClick={onPrivatiSignup} className="w-full px-6 py-3 bg-sky-500 hover:bg-sky-400 text-white rounded-xl font-semibold transition-all hover:shadow-lg hover:shadow-sky-500/25">
+                Registrati come Privato
+              </button>
+            </div>
+          </div>
+
+          {/* Professionisti Card */}
+          <div className="group relative overflow-hidden rounded-3xl bg-gradient-to-br from-amber-500/10 to-orange-600/10 border border-amber-500/20 hover:border-amber-500/40 transition-all duration-300 hover:-translate-y-2">
+            <div className="absolute inset-0 bg-gradient-to-br from-amber-500/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity"></div>
+            <div className="relative p-8 space-y-6">
+              <div className="w-16 h-16 rounded-2xl bg-amber-500/20 flex items-center justify-center">
+                <svg className="w-8 h-8 text-amber-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 13.255A23.931 23.931 0 0112 15c-3.183 0-6.22-.62-9-1.745M16 6V4a2 2 0 00-2-2h-4a2 2 0 00-2 2v2m4 6h-.01M5 20h14a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
+                </svg>
+              </div>
+              <div>
+                <h3 className="text-2xl font-bold text-white mb-2">Installatori & Aziende</h3>
+                <p className="text-white/60">Sei un installatore certificato o un'azienda? Accedi a prezzi riservati, supporto tecnico e servizi professionali.</p>
+              </div>
+              <ul className="space-y-2 text-sm text-white/50">
+                <li className="flex items-center gap-2"><span className="text-amber-400">✓</span> Prezzi riservati B2B</li>
+                <li className="flex items-center gap-2"><span className="text-amber-400">✓</span> Supporto tecnico dedicato</li>
+                <li className="flex items-center gap-2"><span className="text-amber-400">✓</span> Sistemi VRF e commerciali</li>
+                <li className="flex items-center gap-2"><span className="text-amber-400">✓</span> Formazione certificata</li>
+              </ul>
+              <button onClick={onProfessionistiSignup} className="w-full px-6 py-3 bg-amber-500 hover:bg-amber-400 text-white rounded-xl font-semibold transition-all hover:shadow-lg hover:shadow-amber-500/25">
+                Registrati come Professionista
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+  );
+}
+
+// ===== PRIVATI SIGNUP MODAL =====
+function PrivatiSignupModal({ isOpen, onClose, showToast }: { isOpen: boolean; onClose: () => void; showToast: (m: string) => void }) {
+  const handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    showToast('Registrazione completata! Riceverai una email di conferma.');
+    onClose();
+  };
+
+  return (
+    <Modal isOpen={isOpen} onClose={onClose}>
+      <div className="bg-slate-900 rounded-2xl border border-white/10 p-8">
+        <button onClick={onClose} className="absolute top-4 right-4 w-8 h-8 rounded-full bg-white/10 hover:bg-white/20 flex items-center justify-center">
+          <svg className="w-4 h-4 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" /></svg>
+        </button>
+        
+        <div className="mb-6">
+          <div className="w-12 h-12 rounded-xl bg-sky-500/20 flex items-center justify-center mb-4">
+            <svg className="w-6 h-6 text-sky-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6" />
+            </svg>
+          </div>
+          <h3 className="text-2xl font-bold text-white mb-2">Registrazione Privati</h3>
+          <p className="text-white/50 text-sm">Crea il tuo account per accedere ai prodotti residenziali e ricevere assistenza dedicata.</p>
+        </div>
+
+        <form onSubmit={handleSubmit} className="space-y-4">
+          <div className="grid grid-cols-2 gap-4">
+            <input type="text" required placeholder="Nome *" className="w-full px-4 py-3 rounded-xl bg-white/5 border border-white/10 text-white placeholder-white/30 focus:border-sky-500 outline-none" />
+            <input type="text" required placeholder="Cognome *" className="w-full px-4 py-3 rounded-xl bg-white/5 border border-white/10 text-white placeholder-white/30 focus:border-sky-500 outline-none" />
+          </div>
+          <input type="email" required placeholder="Email *" className="w-full px-4 py-3 rounded-xl bg-white/5 border border-white/10 text-white placeholder-white/30 focus:border-sky-500 outline-none" />
+          <input type="tel" required placeholder="Telefono *" className="w-full px-4 py-3 rounded-xl bg-white/5 border border-white/10 text-white placeholder-white/30 focus:border-sky-500 outline-none" />
+          <input type="text" placeholder="Indirizzo" className="w-full px-4 py-3 rounded-xl bg-white/5 border border-white/10 text-white placeholder-white/30 focus:border-sky-500 outline-none" />
+          <div className="grid grid-cols-3 gap-4">
+            <input type="text" placeholder="Città" className="w-full px-4 py-3 rounded-xl bg-white/5 border border-white/10 text-white placeholder-white/30 focus:border-sky-500 outline-none" />
+            <input type="text" placeholder="CAP" className="w-full px-4 py-3 rounded-xl bg-white/5 border border-white/10 text-white placeholder-white/30 focus:border-sky-500 outline-none" />
+            <input type="text" placeholder="Provincia" className="w-full px-4 py-3 rounded-xl bg-white/5 border border-white/10 text-white placeholder-white/30 focus:border-sky-500 outline-none" />
+          </div>
+          <div className="flex items-start gap-2 text-sm text-white/40">
+            <input type="checkbox" required className="mt-1" />
+            <span>Accetto i <a href="#" className="text-sky-400 hover:underline">Termini e Condizioni</a> e la <a href="#" className="text-sky-400 hover:underline">Privacy Policy</a></span>
+          </div>
+          <button type="submit" className="w-full px-6 py-3 bg-sky-500 hover:bg-sky-400 text-white rounded-xl font-semibold transition-all hover:shadow-lg hover:shadow-sky-500/25">
+            Crea Account
+          </button>
+        </form>
+      </div>
+    </Modal>
+  );
+}
+
+// ===== PROFESSIONISTI SIGNUP MODAL =====
+function ProfessionistiSignupModal({ isOpen, onClose, showToast }: { isOpen: boolean; onClose: () => void; showToast: (m: string) => void }) {
+  const handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    showToast('Richiesta inviata! Verificheremo i documenti e ti contatteremo entro 48 ore.');
+    onClose();
+  };
+
+  return (
+    <Modal isOpen={isOpen} onClose={onClose}>
+      <div className="bg-slate-900 rounded-2xl border border-white/10 p-8 max-h-[90vh] overflow-y-auto">
+        <button onClick={onClose} className="absolute top-4 right-4 w-8 h-8 rounded-full bg-white/10 hover:bg-white/20 flex items-center justify-center">
+          <svg className="w-4 h-4 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" /></svg>
+        </button>
+        
+        <div className="mb-6">
+          <div className="w-12 h-12 rounded-xl bg-amber-500/20 flex items-center justify-center mb-4">
+            <svg className="w-6 h-6 text-amber-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 13.255A23.931 23.931 0 0112 15c-3.183 0-6.22-.62-9-1.745M16 6V4a2 2 0 00-2-2h-4a2 2 0 00-2 2v2m4 6h-.01M5 20h14a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
+            </svg>
+          </div>
+          <h3 className="text-2xl font-bold text-white mb-2">Registrazione Professionisti</h3>
+          <p className="text-white/50 text-sm">Compila il form e carica i documenti richiesti per accedere ai prezzi riservati e ai servizi professionali.</p>
+        </div>
+
+        <form onSubmit={handleSubmit} className="space-y-4">
+          {/* Dati Azienda */}
+          <div className="space-y-3">
+            <h4 className="text-sm font-semibold text-white/70 uppercase tracking-wider">Dati Aziendali</h4>
+            <input type="text" required placeholder="Ragione Sociale *" className="w-full px-4 py-3 rounded-xl bg-white/5 border border-white/10 text-white placeholder-white/30 focus:border-amber-500 outline-none" />
+            <div className="grid grid-cols-2 gap-4">
+              <input type="text" required placeholder="Partita IVA *" className="w-full px-4 py-3 rounded-xl bg-white/5 border border-white/10 text-white placeholder-white/30 focus:border-amber-500 outline-none" />
+              <input type="text" required placeholder="Codice Fiscale *" className="w-full px-4 py-3 rounded-xl bg-white/5 border border-white/10 text-white placeholder-white/30 focus:border-amber-500 outline-none" />
+            </div>
+            <input type="email" required placeholder="PEC (Posta Elettronica Certificata) *" className="w-full px-4 py-3 rounded-xl bg-white/5 border border-white/10 text-white placeholder-white/30 focus:border-amber-500 outline-none" />
+            <input type="text" placeholder="Numero REA" className="w-full px-4 py-3 rounded-xl bg-white/5 border border-white/10 text-white placeholder-white/30 focus:border-amber-500 outline-none" />
+          </div>
+
+          {/* Contatto */}
+          <div className="space-y-3 pt-4 border-t border-white/5">
+            <h4 className="text-sm font-semibold text-white/70 uppercase tracking-wider">Referente Aziendale</h4>
+            <div className="grid grid-cols-2 gap-4">
+              <input type="text" required placeholder="Nome *" className="w-full px-4 py-3 rounded-xl bg-white/5 border border-white/10 text-white placeholder-white/30 focus:border-amber-500 outline-none" />
+              <input type="text" required placeholder="Cognome *" className="w-full px-4 py-3 rounded-xl bg-white/5 border border-white/10 text-white placeholder-white/30 focus:border-amber-500 outline-none" />
+            </div>
+            <input type="email" required placeholder="Email aziendale *" className="w-full px-4 py-3 rounded-xl bg-white/5 border border-white/10 text-white placeholder-white/30 focus:border-amber-500 outline-none" />
+            <input type="tel" required placeholder="Telefono *" className="w-full px-4 py-3 rounded-xl bg-white/5 border border-white/10 text-white placeholder-white/30 focus:border-amber-500 outline-none" />
+          </div>
+
+          {/* Documenti */}
+          <div className="space-y-3 pt-4 border-t border-white/5">
+            <h4 className="text-sm font-semibold text-white/70 uppercase tracking-wider">Documenti Richiesti</h4>
+            <div className="p-4 rounded-xl bg-amber-500/5 border border-amber-500/20">
+              <p className="text-xs text-amber-400 mb-2">📋 Documenti obbligatori per la registrazione:</p>
+              <ul className="text-xs text-white/50 space-y-1">
+                <li>• Visura Camerale (non anteriore a 6 mesi)</li>
+                <li>• Certificato di abilitazione DM 37/08 (lettera d)</li>
+                <li>• DURC (Documento Unico Regolarità Contributiva)</li>
+              </ul>
+            </div>
+            
+            <div>
+              <label className="block text-sm text-white/60 mb-2">Visura Camerale *</label>
+              <input type="file" required accept=".pdf,.jpg,.png" className="w-full px-4 py-3 rounded-xl bg-white/5 border border-white/10 text-white file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:text-sm file:font-semibold file:bg-amber-500/20 file:text-amber-400 hover:file:bg-amber-500/30" />
+            </div>
+            
+            <div>
+              <label className="block text-sm text-white/60 mb-2">Certificato DM 37/08 *</label>
+              <input type="file" required accept=".pdf,.jpg,.png" className="w-full px-4 py-3 rounded-xl bg-white/5 border border-white/10 text-white file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:text-sm file:font-semibold file:bg-amber-500/20 file:text-amber-400 hover:file:bg-amber-500/30" />
+            </div>
+            
+            <div>
+              <label className="block text-sm text-white/60 mb-2">DURC *</label>
+              <input type="file" required accept=".pdf,.jpg,.png" className="w-full px-4 py-3 rounded-xl bg-white/5 border border-white/10 text-white file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:text-sm file:font-semibold file:bg-amber-500/20 file:text-amber-400 hover:file:bg-amber-500/30" />
+            </div>
+            
+            <div>
+              <label className="block text-sm text-white/60 mb-2">Certificato ISO 9001 (opzionale)</label>
+              <input type="file" accept=".pdf,.jpg,.png" className="w-full px-4 py-3 rounded-xl bg-white/5 border border-white/10 text-white file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:text-sm file:font-semibold file:bg-white/10 file:text-white/60 hover:file:bg-white/20" />
+            </div>
+          </div>
+
+          {/* Sede */}
+          <div className="space-y-3 pt-4 border-t border-white/5">
+            <h4 className="text-sm font-semibold text-white/70 uppercase tracking-wider">Sede Legale</h4>
+            <input type="text" required placeholder="Indirizzo *" className="w-full px-4 py-3 rounded-xl bg-white/5 border border-white/10 text-white placeholder-white/30 focus:border-amber-500 outline-none" />
+            <div className="grid grid-cols-3 gap-4">
+              <input type="text" required placeholder="Città *" className="w-full px-4 py-3 rounded-xl bg-white/5 border border-white/10 text-white placeholder-white/30 focus:border-amber-500 outline-none" />
+              <input type="text" required placeholder="CAP *" className="w-full px-4 py-3 rounded-xl bg-white/5 border border-white/10 text-white placeholder-white/30 focus:border-amber-500 outline-none" />
+              <input type="text" required placeholder="Provincia *" className="w-full px-4 py-3 rounded-xl bg-white/5 border border-white/10 text-white placeholder-white/30 focus:border-amber-500 outline-none" />
+            </div>
+          </div>
+
+          <div className="flex items-start gap-2 text-sm text-white/40 pt-4">
+            <input type="checkbox" required className="mt-1" />
+            <span>Accetto i <a href="#" className="text-amber-400 hover:underline">Termini e Condizioni</a>, la <a href="#" className="text-amber-400 hover:underline">Privacy Policy</a> e autorizzo il trattamento dei dati ai sensi del GDPR</span>
+          </div>
+          
+          <button type="submit" className="w-full px-6 py-3 bg-amber-500 hover:bg-amber-400 text-white rounded-xl font-semibold transition-all hover:shadow-lg hover:shadow-amber-500/25">
+            Invia Richiesta di Registrazione
+          </button>
+        </form>
+      </div>
+    </Modal>
+  );
+}
+
 // ===== MAIN APP =====
 export default function App() {
   const [selectedProduct, setSelectedProduct] = useState<Product | null>(null);
   const [legalModal, setLegalModal] = useState<string | null>(null);
+  const [privatiSignup, setPrivatiSignup] = useState(false);
+  const [professionistiSignup, setProfessionistiSignup] = useState(false);
   const [toast, setToast] = useState({ message: '', visible: false });
 
   const showToast = useCallback((message: string) => {
@@ -685,6 +922,8 @@ export default function App() {
 
   const handleNavigate = useCallback((target: string) => {
     if (['privacy', 'cookie', 'termini'].includes(target)) setLegalModal(target);
+    else if (target === 'privati') setPrivatiSignup(true);
+    else if (target === 'professionisti') setProfessionistiSignup(true);
     else scrollToSection(target);
   }, [scrollToSection]);
 
@@ -696,13 +935,14 @@ export default function App() {
 
   return (
     <div className="min-h-screen bg-black text-white">
-      <Sidebar />
-      <MobileMenu />
+      <Sidebar onPrivatiSignup={() => setPrivatiSignup(true)} onProfessionistiSignup={() => setProfessionistiSignup(true)} />
+      <MobileMenu onPrivatiSignup={() => setPrivatiSignup(true)} onProfessionistiSignup={() => setProfessionistiSignup(true)} />
       <BackToTop />
       <Toast message={toast.message} isVisible={toast.visible} />
 
       <main className="lg:ml-64">
         <HeroSection />
+        <ProfileChoiceSection onPrivatiSignup={() => setPrivatiSignup(true)} onProfessionistiSignup={() => setProfessionistiSignup(true)} />
         <WellbeingSection />
         <BrandSection id="panasonic" brandName="Panasonic" brandColor="bg-sky-600" tagline="Etherea • TZ • Multi-Split" description="Leader mondiale nella climatizzazione residenziale. La gamma Etherea con nanoe™ X offre aria pura, silenziosità a 19dB(A) e design premium. Sistemi multi-split fino a 5 unità interne." products={panasonicProducts} heroImg={panasonicEthereaImg} onProductClick={setSelectedProduct} />
         <BrandSection id="tcl" brandName="TCL" brandColor="bg-amber-600" tagline="BreezeIN • UNITARY • Hotel Mode" description="Innovazione e rapporto qualità-prezzo. La serie BreezeIN con Gentle Breeze offre 1422 micro-fori per un flusso d'aria delicato. Compatibile con Google Home, Alexa e TCL Home App." products={tclProducts} heroImg={tclBreezeInImg} onProductClick={setSelectedProduct} />
@@ -715,6 +955,10 @@ export default function App() {
         <ContactSection showToast={showToast} />
         <Footer onNavigate={handleNavigate} />
       </main>
+
+      {/* Signup Modals */}
+      <PrivatiSignupModal isOpen={privatiSignup} onClose={() => setPrivatiSignup(false)} showToast={showToast} />
+      <ProfessionistiSignupModal isOpen={professionistiSignup} onClose={() => setProfessionistiSignup(false)} showToast={showToast} />
 
       {/* Product Modal */}
       <Modal isOpen={!!selectedProduct} onClose={() => setSelectedProduct(null)}>
