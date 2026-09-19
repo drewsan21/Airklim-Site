@@ -6,6 +6,10 @@ import { AdminHeader } from './components/AdminHeader';
 import { StatsCard } from './components/StatsCard';
 import { RecentActivity } from './components/RecentActivity';
 import { QuickActions } from './components/QuickActions';
+import { UsersManagement } from './sections/UsersManagement';
+import { OrdersManagement } from './sections/OrdersManagement';
+import { ProductsManagement } from './sections/ProductsManagement';
+import { ContentManagement } from './sections/ContentManagement';
 import { AdminSection } from '../types/admin';
 
 export function ManagementDashboard() {
@@ -81,45 +85,10 @@ export function ManagementDashboard() {
             </div>
           )}
 
-          {activeSection === 'users' && (
-            <div>
-              <h1 className="text-3xl font-bold text-white mb-2">Gestione Utenti</h1>
-              <p className="text-white/50">Visualizza e gestisci tutti gli utenti della piattaforma</p>
-              <div className="mt-8 p-8 rounded-2xl bg-white/5 border border-white/10 text-center">
-                <p className="text-white/60">Sezione in sviluppo...</p>
-              </div>
-            </div>
-          )}
-
-          {activeSection === 'orders' && (
-            <div>
-              <h1 className="text-3xl font-bold text-white mb-2">Gestione Ordini</h1>
-              <p className="text-white/50">Visualizza e gestisci tutti gli ordini</p>
-              <div className="mt-8 p-8 rounded-2xl bg-white/5 border border-white/10 text-center">
-                <p className="text-white/60">Sezione in sviluppo...</p>
-              </div>
-            </div>
-          )}
-
-          {activeSection === 'products' && (
-            <div>
-              <h1 className="text-3xl font-bold text-white mb-2">Gestione Prodotti</h1>
-              <p className="text-white/50">Aggiungi, modifica o elimina prodotti</p>
-              <div className="mt-8 p-8 rounded-2xl bg-white/5 border border-white/10 text-center">
-                <p className="text-white/60">Sezione in sviluppo...</p>
-              </div>
-            </div>
-          )}
-
-          {activeSection === 'content' && (
-            <div>
-              <h1 className="text-3xl font-bold text-white mb-2">Gestione Contenuti</h1>
-              <p className="text-white/50">Gestisci blog, video e galleria</p>
-              <div className="mt-8 p-8 rounded-2xl bg-white/5 border border-white/10 text-center">
-                <p className="text-white/60">Sezione in sviluppo...</p>
-              </div>
-            </div>
-          )}
+          {activeSection === 'users' && <UsersManagement />}
+          {activeSection === 'orders' && <OrdersManagement />}
+          {activeSection === 'products' && <ProductsManagement />}
+          {activeSection === 'content' && <ContentManagement />}
 
           {activeSection === 'analytics' && (
             <div>
