@@ -13,6 +13,10 @@ import {
 } from './Features';
 import { CookieBanner } from './CookieBanner';
 import { LegalPages } from './LegalPages';
+import { BlogSection } from './Blog';
+import { VideoSection } from './VideoSection';
+import { TestimonialsSection } from './TestimonialsSection';
+import { GallerySection } from './GallerySection';
 
 // ===== LIFESTYLE IMAGES =====
 const heroBg = 'https://images.unsplash.com/photo-1600585154340-be6161a56a0c?w=1920&h=1080&fit=crop&auto=format';
@@ -995,6 +999,13 @@ export default function App() {
         <FAQSection />
         <LegalPages />
         <ContactSection showToast={showToast} />
+        
+        {/* Phase 2: Content & Engagement */}
+        <BlogSection />
+        <VideoSection />
+        <TestimonialsSection />
+        <GallerySection />
+        
         <Footer onNavigate={handleNavigate} />
       </main>
 
