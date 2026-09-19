@@ -17,6 +17,8 @@ import { BlogSection } from './Blog';
 import { VideoSection } from './VideoSection';
 import { TestimonialsSection } from './TestimonialsSection';
 import { GallerySection } from './GallerySection';
+import { AuthModal, CartSidebar, UserDashboard } from './Commerce';
+import { useAuth, useCart } from './hooks';
 
 // ===== LIFESTYLE IMAGES =====
 const heroBg = 'https://images.unsplash.com/photo-1600585154340-be6161a56a0c?w=1920&h=1080&fit=crop&auto=format';
@@ -946,6 +948,10 @@ export default function App() {
   const [privatiSignup, setPrivatiSignup] = useState(false);
   const [professionistiSignup, setProfessionistiSignup] = useState(false);
   const [toast, setToast] = useState({ message: '', visible: false });
+  const [authModal, setAuthModal] = useState(false);
+  const [cartOpen, setCartOpen] = useState(false);
+  const { user } = useAuth();
+  const { itemCount } = useCart();
 
   const showToast = useCallback((message: string) => {
     setToast({ message, visible: true });
@@ -1006,8 +1012,54 @@ export default function App() {
         <TestimonialsSection />
         <GallerySection />
         
+        {/* Phase 3: Backend & Commerce */}
+        {user && <UserDashboard />}
+        
         <Footer onNavigate={handleNavigate} />
       </main>
+
+      {/* Phase 3: Commerce Components */}
+      <AuthModal isOpen={authModal} onClose={() => setAuthModal(false)} />
+      <CartSidebar isOpen={cartOpen} onClose={() => setCartOpen(false)} />
+      
+      {/* Cart Button */}
+      <button
+        onClick={() => setCartOpen(true)}
+        className="fixed bottom-24 left-6 z-50 w-14 h-14 rounded-full bg-slate-800 hover:bg-slate-700 text-white flex items-center justify-center shadow-lg border border-white/10 transition-all hover:scale-110 lg:left-[280px]"
+        aria-label="Apri carrello"
+      >
+        <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z" />
+        </svg>
+        {itemCount > 0 && (
+          <span className="absolute -top-1 -right-1 w-5 h-5 bg-sky-500 text-white text-xs font-bold rounded-full flex items-center justify-center">
+            {itemCount}
+          </span>
+        )}
+      </button>
+      
+      {/* User/Auth Button */}
+      <button
+        onClick={() => setAuthModal(true)}
+        className="fixed top-24 right-6 z-50 px-4 py-2 rounded-full bg-slate-800/80 backdrop-blur-sm hover:bg-slate-700 text-white text-sm font-medium flex items-center gap-2 shadow-lg border border-white/10 transition-all lg:right-8"
+        aria-label={user ? 'Il tuo account' : 'Accedi'}
+      >
+        {user ? (
+          <>
+            <span className="w-6 h-6 rounded-full bg-sky-500 flex items-center justify-center text-xs font-bold">
+              {user.name[0]}
+            </span>
+            <span className="hidden sm:inline">{user.name}</span>
+          </>
+        ) : (
+          <>
+            <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
+            </svg>
+            <span className="hidden sm:inline">Accedi</span>
+          </>
+        )}
+      </button>
 
       {/* WhatsApp Button */}
       <WhatsAppButton />
