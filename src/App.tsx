@@ -1,4 +1,16 @@
 import { useState, useEffect, useCallback } from 'react';
+import {
+  ContoTermicoCalculator,
+  BTUCalculator,
+  ProductComparison,
+  WhatsAppButton,
+  EnergySavingsSimulator,
+  PromotionsSection,
+  KnowledgeBase,
+  FinancingCalculator,
+  OrderTracking,
+  InstallerMap
+} from './Features';
 
 // ===== LIFESTYLE IMAGES =====
 const heroBg = 'https://images.unsplash.com/photo-1600585154340-be6161a56a0c?w=1920&h=1080&fit=crop&auto=format';
@@ -146,13 +158,22 @@ function Sidebar({ onPrivatiSignup, onProfessionistiSignup }: { onPrivatiSignup:
   const [active, setActive] = useState('home');
   const items = [
     { id: 'home', label: 'Home', icon: '🏠' },
+    { id: 'offerte', label: 'Offerte', icon: '🏷️' },
     { id: 'benessere', label: 'Benessere', icon: '💙' },
     { id: 'panasonic', label: 'Panasonic', icon: '🔷' },
     { id: 'tcl', label: 'TCL', icon: '🔶' },
+    { id: 'confronta', label: 'Confronta', icon: '⚖️' },
     { id: 'riscaldamento', label: 'Riscaldamento', icon: '🔥' },
+    { id: 'btu-calculator', label: 'Calcola BTU', icon: '📐' },
     { id: 'residenziale', label: 'Residenziale', icon: '🏡' },
     { id: 'commerciale', label: 'Commerciale', icon: '🏢' },
+    { id: 'risparmio', label: 'Risparmio', icon: '💰' },
+    { id: 'conto-termico', label: 'Conto Termico', icon: '🧮' },
+    { id: 'finanziamento', label: 'Finanziamento', icon: '💳' },
     { id: 'pro-partner', label: 'Pro Partner', icon: '🏆' },
+    { id: 'guide', label: 'Guide', icon: '🎓' },
+    { id: 'tracking', label: 'Tracking', icon: '📦' },
+    { id: 'installatori', label: 'Installatori', icon: '🗺️' },
     { id: 'chi-siamo', label: 'Chi Siamo', icon: '👥' },
     { id: 'faq', label: 'FAQ', icon: '❓' },
     { id: 'contatti', label: 'Contatti', icon: '📞' },
@@ -207,13 +228,22 @@ function MobileMenu({ onPrivatiSignup, onProfessionistiSignup }: { onPrivatiSign
   const [isOpen, setIsOpen] = useState(false);
   const items = [
     { id: 'home', label: 'Home', icon: '🏠' },
+    { id: 'offerte', label: 'Offerte', icon: '🏷️' },
     { id: 'benessere', label: 'Benessere', icon: '💙' },
     { id: 'panasonic', label: 'Panasonic', icon: '🔷' },
     { id: 'tcl', label: 'TCL', icon: '🔶' },
+    { id: 'confronta', label: 'Confronta', icon: '⚖️' },
     { id: 'riscaldamento', label: 'Riscaldamento', icon: '🔥' },
+    { id: 'btu-calculator', label: 'Calcola BTU', icon: '📐' },
     { id: 'residenziale', label: 'Residenziale', icon: '🏡' },
     { id: 'commerciale', label: 'Commerciale', icon: '🏢' },
+    { id: 'risparmio', label: 'Risparmio', icon: '💰' },
+    { id: 'conto-termico', label: 'Conto Termico', icon: '🧮' },
+    { id: 'finanziamento', label: 'Finanziamento', icon: '💳' },
     { id: 'pro-partner', label: 'Pro Partner', icon: '🏆' },
+    { id: 'guide', label: 'Guide', icon: '🎓' },
+    { id: 'tracking', label: 'Tracking', icon: '📦' },
+    { id: 'installatori', label: 'Installatori', icon: '🗺️' },
     { id: 'chi-siamo', label: 'Chi Siamo', icon: '👥' },
     { id: 'faq', label: 'FAQ', icon: '❓' },
     { id: 'contatti', label: 'Contatti', icon: '📞' },
@@ -943,18 +973,30 @@ export default function App() {
       <main className="lg:ml-64">
         <HeroSection />
         <ProfileChoiceSection onPrivatiSignup={() => setPrivatiSignup(true)} onProfessionistiSignup={() => setProfessionistiSignup(true)} />
+        <PromotionsSection />
         <WellbeingSection />
         <BrandSection id="panasonic" brandName="Panasonic" brandColor="bg-sky-600" tagline="Etherea • TZ • Multi-Split" description="Leader mondiale nella climatizzazione residenziale. La gamma Etherea con nanoe™ X offre aria pura, silenziosità a 19dB(A) e design premium. Sistemi multi-split fino a 5 unità interne." products={panasonicProducts} heroImg={panasonicEthereaImg} onProductClick={setSelectedProduct} />
         <BrandSection id="tcl" brandName="TCL" brandColor="bg-amber-600" tagline="BreezeIN • UNITARY • Hotel Mode" description="Innovazione e rapporto qualità-prezzo. La serie BreezeIN con Gentle Breeze offre 1422 micro-fori per un flusso d'aria delicato. Compatibile con Google Home, Alexa e TCL Home App." products={tclProducts} heroImg={tclBreezeInImg} onProductClick={setSelectedProduct} />
+        <ProductComparison />
         <HeatersSection onProductClick={setSelectedProduct} />
+        <BTUCalculator />
         <ResidentialSection onProductClick={setSelectedProduct} />
         <CommercialSection onProductClick={setSelectedProduct} />
+        <EnergySavingsSimulator />
+        <ContoTermicoCalculator />
+        <FinancingCalculator />
         <ProPartnerSection />
+        <KnowledgeBase />
+        <OrderTracking />
+        <InstallerMap />
         <AboutSection />
         <FAQSection />
         <ContactSection showToast={showToast} />
         <Footer onNavigate={handleNavigate} />
       </main>
+
+      {/* WhatsApp Button */}
+      <WhatsAppButton />
 
       {/* Signup Modals */}
       <PrivatiSignupModal isOpen={privatiSignup} onClose={() => setPrivatiSignup(false)} showToast={showToast} />
