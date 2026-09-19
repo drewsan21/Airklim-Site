@@ -21,6 +21,10 @@ import { AuthModal, CartSidebar, UserDashboard } from './Commerce';
 import { useAuth, useCart } from './hooks';
 import { LeadMagnetSection, SmartPopupSystem, NewsletterSection, SocialSharing } from './Marketing';
 import { LanguageProvider, LanguageSwitcher } from './LanguageContext';
+import { EmailAutomationSystem, AnalyticsDashboard } from './Analytics';
+import { useWebVitals, preloadCriticalResources } from './Performance';
+import { NPSSurvey, FeedbackWidget, UsabilityTestRecorder } from './UXResearch';
+import { ErrorBoundary, useErrorHandler, usePerformanceMonitoring, UptimeMonitor, ErrorLogViewer } from './ErrorTracking';
 
 // ===== LIFESTYLE IMAGES =====
 const heroBg = 'https://images.unsplash.com/photo-1600585154340-be6161a56a0c?w=1920&h=1080&fit=crop&auto=format';
@@ -954,6 +958,12 @@ export default function App() {
   const [cartOpen, setCartOpen] = useState(false);
   const { user } = useAuth();
   const { itemCount } = useCart();
+  
+  // Phase 5: Performance & Monitoring Hooks
+  useErrorHandler();
+  usePerformanceMonitoring();
+  useWebVitals();
+  preloadCriticalResources();
 
   const showToast = useCallback((message: string) => {
     setToast({ message, visible: true });
@@ -978,6 +988,7 @@ export default function App() {
   };
 
   return (
+    <ErrorBoundary>
     <LanguageProvider>
     <div className="min-h-screen bg-black text-white">
       <Sidebar onPrivatiSignup={() => setPrivatiSignup(true)} onProfessionistiSignup={() => setProfessionistiSignup(true)} />
@@ -1075,6 +1086,15 @@ export default function App() {
       {/* Phase 4: Marketing Components */}
       <SmartPopupSystem />
       <SocialSharing />
+      <EmailAutomationSystem />
+      <AnalyticsDashboard />
+      
+      {/* Phase 5: UX Research & Monitoring */}
+      <NPSSurvey />
+      <FeedbackWidget />
+      <UsabilityTestRecorder />
+      <UptimeMonitor />
+      <ErrorLogViewer />
  
       {/* Cookie Banner */}
       <CookieBanner />
@@ -1121,5 +1141,6 @@ export default function App() {
       </Modal>
     </div>
     </LanguageProvider>
+    </ErrorBoundary>
   );
 }
