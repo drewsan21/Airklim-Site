@@ -11,6 +11,8 @@ import {
   OrderTracking,
   InstallerMap
 } from './Features';
+import { CookieBanner } from './CookieBanner';
+import { LegalPages } from './LegalPages';
 
 // ===== LIFESTYLE IMAGES =====
 const heroBg = 'https://images.unsplash.com/photo-1600585154340-be6161a56a0c?w=1920&h=1080&fit=crop&auto=format';
@@ -991,12 +993,16 @@ export default function App() {
         <InstallerMap />
         <AboutSection />
         <FAQSection />
+        <LegalPages />
         <ContactSection showToast={showToast} />
         <Footer onNavigate={handleNavigate} />
       </main>
 
       {/* WhatsApp Button */}
       <WhatsAppButton />
+
+      {/* Cookie Banner */}
+      <CookieBanner />
 
       {/* Signup Modals */}
       <PrivatiSignupModal isOpen={privatiSignup} onClose={() => setPrivatiSignup(false)} showToast={showToast} />
