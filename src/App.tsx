@@ -11,6 +11,25 @@ import {
   OrderTracking,
   InstallerMap
 } from './Features';
+import { CookieBanner } from './CookieBanner';
+import { LegalPages } from './LegalPages';
+import { BlogSection } from './Blog';
+import { VideoSection } from './VideoSection';
+import { TestimonialsSection } from './TestimonialsSection';
+import { GallerySection } from './GallerySection';
+import { AuthModal, CartSidebar, UserDashboard } from './Commerce';
+import { useAuth, useCart } from './hooks';
+import { LeadMagnetSection, SmartPopupSystem, NewsletterSection, SocialSharing } from './Marketing';
+import { LanguageProvider, LanguageSwitcher } from './LanguageContext';
+import { EmailAutomationSystem, AnalyticsDashboard } from './Analytics';
+import { useWebVitals, preloadCriticalResources } from './Performance';
+import { NPSSurvey, FeedbackWidget, UsabilityTestRecorder } from './UXResearch';
+import { ErrorBoundary, useErrorHandler, usePerformanceMonitoring, UptimeMonitor, ErrorLogViewer } from './ErrorTracking';
+import { securityMiddleware } from './security';
+import { ManagementLogin } from './management/ManagementLogin';
+import { ManagementDashboard } from './management/ManagementDashboard';
+import { useAdminAuth } from './management/hooks/useAdminAuth';
+import { initializeTestAccounts } from './config/testAccounts';
 
 // ===== LIFESTYLE IMAGES =====
 const heroBg = 'https://images.unsplash.com/photo-1600585154340-be6161a56a0c?w=1920&h=1080&fit=crop&auto=format';
@@ -940,6 +959,44 @@ export default function App() {
   const [privatiSignup, setPrivatiSignup] = useState(false);
   const [professionistiSignup, setProfessionistiSignup] = useState(false);
   const [toast, setToast] = useState({ message: '', visible: false });
+  const [authModal, setAuthModal] = useState(false);
+  const [cartOpen, setCartOpen] = useState(false);
+  const { user } = useAuth();
+  const { itemCount } = useCart();
+  const { admin } = useAdminAuth();
+  const [isAdminRoute, setIsAdminRoute] = useState(window.location.hash === '#admin');
+  
+  // Admin routing
+  useEffect(() => {
+    const handleHashChange = () => {
+      setIsAdminRoute(window.location.hash === '#admin');
+    };
+    
+    window.addEventListener('hashchange', handleHashChange);
+    return () => window.removeEventListener('hashchange', handleHashChange);
+  }, []);
+  
+  // Se siamo nella route admin, mostra solo il management system
+  if (isAdminRoute) {
+    if (!admin) {
+      return <ManagementLogin onLoginSuccess={() => window.location.hash = '#admin'} />;
+    }
+    return <ManagementDashboard />;
+  }
+  
+  // Phase 5: Performance & Monitoring Hooks
+  useErrorHandler();
+  usePerformanceMonitoring();
+  useWebVitals();
+  preloadCriticalResources();
+  
+  // Security Middleware Initialization
+  useEffect(() => {
+    securityMiddleware.initialize();
+    initializeTestAccounts();
+    console.log('[SECURITY] Security middleware initialized');
+    console.log('[TEST] Test accounts initialized');
+  }, []);
 
   const showToast = useCallback((message: string) => {
     setToast({ message, visible: true });
@@ -964,11 +1021,14 @@ export default function App() {
   };
 
   return (
+    <ErrorBoundary>
+    <LanguageProvider>
     <div className="min-h-screen bg-black text-white">
       <Sidebar onPrivatiSignup={() => setPrivatiSignup(true)} onProfessionistiSignup={() => setProfessionistiSignup(true)} />
       <MobileMenu onPrivatiSignup={() => setPrivatiSignup(true)} onProfessionistiSignup={() => setProfessionistiSignup(true)} />
       <BackToTop />
       <Toast message={toast.message} isVisible={toast.visible} />
+      <LanguageSwitcher />
 
       <main className="lg:ml-64">
         <HeroSection />
@@ -991,13 +1051,86 @@ export default function App() {
         <InstallerMap />
         <AboutSection />
         <FAQSection />
+        <LegalPages />
         <ContactSection showToast={showToast} />
+        
+        {/* Phase 2: Content & Engagement */}
+        <BlogSection />
+        <VideoSection />
+        <TestimonialsSection />
+        <GallerySection />
+        
+        {/* Phase 4: Marketing & Growth */}
+        <LeadMagnetSection />
+        <NewsletterSection />
+        
+        {/* Phase 3: Backend & Commerce */}
+        {user && <UserDashboard />}
+        
         <Footer onNavigate={handleNavigate} />
       </main>
+
+      {/* Phase 3: Commerce Components */}
+      <AuthModal isOpen={authModal} onClose={() => setAuthModal(false)} />
+      <CartSidebar isOpen={cartOpen} onClose={() => setCartOpen(false)} />
+      
+      {/* Cart Button */}
+      <button
+        onClick={() => setCartOpen(true)}
+        className="fixed bottom-24 left-6 z-50 w-14 h-14 rounded-full bg-slate-800 hover:bg-slate-700 text-white flex items-center justify-center shadow-lg border border-white/10 transition-all hover:scale-110 lg:left-[280px]"
+        aria-label="Apri carrello"
+      >
+        <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z" />
+        </svg>
+        {itemCount > 0 && (
+          <span className="absolute -top-1 -right-1 w-5 h-5 bg-sky-500 text-white text-xs font-bold rounded-full flex items-center justify-center">
+            {itemCount}
+          </span>
+        )}
+      </button>
+      
+      {/* User/Auth Button */}
+      <button
+        onClick={() => setAuthModal(true)}
+        className="fixed top-24 right-6 z-50 px-4 py-2 rounded-full bg-slate-800/80 backdrop-blur-sm hover:bg-slate-700 text-white text-sm font-medium flex items-center gap-2 shadow-lg border border-white/10 transition-all lg:right-8"
+        aria-label={user ? 'Il tuo account' : 'Accedi'}
+      >
+        {user ? (
+          <>
+            <span className="w-6 h-6 rounded-full bg-sky-500 flex items-center justify-center text-xs font-bold">
+              {user.name[0]}
+            </span>
+            <span className="hidden sm:inline">{user.name}</span>
+          </>
+        ) : (
+          <>
+            <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
+            </svg>
+            <span className="hidden sm:inline">Accedi</span>
+          </>
+        )}
+      </button>
 
       {/* WhatsApp Button */}
       <WhatsAppButton />
 
+      {/* Phase 4: Marketing Components */}
+      <SmartPopupSystem />
+      <SocialSharing />
+      <EmailAutomationSystem />
+      <AnalyticsDashboard />
+      
+      {/* Phase 5: UX Research & Monitoring */}
+      <NPSSurvey />
+      <FeedbackWidget />
+      <UsabilityTestRecorder />
+      <UptimeMonitor />
+      <ErrorLogViewer />
+ 
+      {/* Cookie Banner */}
+      <CookieBanner />
       {/* Signup Modals */}
       <PrivatiSignupModal isOpen={privatiSignup} onClose={() => setPrivatiSignup(false)} showToast={showToast} />
       <ProfessionistiSignupModal isOpen={professionistiSignup} onClose={() => setProfessionistiSignup(false)} showToast={showToast} />
@@ -1040,5 +1173,7 @@ export default function App() {
         )}
       </Modal>
     </div>
+    </LanguageProvider>
+    </ErrorBoundary>
   );
 }
