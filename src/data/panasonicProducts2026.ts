@@ -1,7 +1,26 @@
 /**
  * Dati Prodotti Panasonic 2026
  * Aggiornati con specifiche reali dal catalogo ufficiale Panasonic
+ * 
+ * NOTA: Le immagini sono rappresentazioni AI realistiche dei prodotti.
+ * Per le immagini ufficiali del catalogo Panasonic 2026, contattare:
+ * - Panasonic Marketing Europe: marketing@eu.panasonic.com
+ * - Oppure scaricare da: https://www.panasonic.com/it/consumer/aria-condizionata
  */
+
+// Immagini prodotti generate (rappresentazioni realistiche)
+export const productImages = {
+  ethereaGrafite: 'https://image.qwenlm.ai/generated-images/3cede363-8c0b-4c62-a90c-e57b8be72ac4/_result.png',
+  ethereaBianco: 'https://image.qwenlm.ai/generated-images/0344a503-3274-47e9-a2f9-a05dca659478/_result.png',
+  tz: 'https://image.qwenlm.ai/generated-images/444b17e9-4ab5-47bb-9a9b-51773b24201b/_result.png',
+  console: 'https://image.qwenlm.ai/generated-images/118e5893-f86f-4e74-a045-e7703867764f/_result.png',
+  outdoor: 'https://image.qwenlm.ai/generated-images/77c536f0-d834-4016-9e6f-eb8e7cef1d7d/_result.png',
+  remote: 'https://image.qwenlm.ai/generated-images/ee13d7b2-36c6-4975-b54e-a572d53afa01/_result.png',
+  ducted: 'https://image.qwenlm.ai/generated-images/09e653f5-4ec5-4641-8b13-ed8f38e826e3/_result.png',
+  multiSplit: 'https://image.qwenlm.ai/generated-images/26743b58-46ec-4400-9edd-4dbbf2b558e3/_result.png',
+  professional: 'https://image.qwenlm.ai/generated-images/462e8098-1418-4411-8bf1-b9394fb953e2/_result.png',
+  tclBreezeIn: 'https://image.qwenlm.ai/generated-images/9ff41c71-172b-42b6-bfca-d32f3d0f6c9f/_result.png'
+};
 
 export const panasonicProducts2026 = [
   // ===== ETHEREA (Nuovo con nanoe™ X Mark 3) =====
@@ -41,7 +60,7 @@ export const panasonicProducts2026 = [
       compressor: 'Rotary R2',
       warranty: '5 anni compressore'
     },
-    image: '/images/panasonic-etherea-grafite.jpg',
+    image: productImages.ethereaGrafite,
     description: 'Etherea con nanoe™ X Mark 3: 48 trilioni di radicali ossidrilici al secondo per aria pura e sanitizzata. Design premium in grigio grafite.'
   },
   {

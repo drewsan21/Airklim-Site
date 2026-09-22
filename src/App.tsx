@@ -54,9 +54,17 @@ const restaurantGuest = 'https://images.unsplash.com/photo-1517248135467-4c7edca
 const gymWorkout = 'https://images.unsplash.com/photo-1534438327276-14e5300c3a48?w=1200&h=800&fit=crop&auto=format';
 const hotelRoom = 'https://images.unsplash.com/photo-1618773928121-c32242e63f39?w=1200&h=800&fit=crop&auto=format';
 
-// ===== PRODUCT IMAGES (AI Generated) =====
-const panasonicEthereaImg = 'https://image.qwenlm.ai/generated-images/3d663212-3b4e-4de4-872f-4f64990b4f9d/_result.png';
-const tclBreezeInImg = 'https://image.qwenlm.ai/generated-images/a0e66962-7390-4937-8e72-e1fe1b1f5530/_result.png';
+// ===== PRODUCT IMAGES (AI Generated - Realistic representations) =====
+const panasonicEthereaGrafiteImg = 'https://image.qwenlm.ai/generated-images/3cede363-8c0b-4c62-a90c-e57b8be72ac4/_result.png';
+const panasonicEthereaBiancoImg = 'https://image.qwenlm.ai/generated-images/0344a503-3274-47e9-a2f9-a05dca659478/_result.png';
+const panasonicTZImg = 'https://image.qwenlm.ai/generated-images/444b17e9-4ab5-47bb-9a9b-51773b24201b/_result.png';
+const panasonicConsoleImg = 'https://image.qwenlm.ai/generated-images/118e5893-f86f-4e74-a045-e7703867764f/_result.png';
+const panasonicOutdoorImg = 'https://image.qwenlm.ai/generated-images/77c536f0-d834-4016-9e6f-eb8e7cef1d7d/_result.png';
+const panasonicRemoteImg = 'https://image.qwenlm.ai/generated-images/ee13d7b2-36c6-4975-b54e-a572d53afa01/_result.png';
+const tclBreezeInImg = 'https://image.qwenlm.ai/generated-images/9ff41c71-172b-42b6-bfca-d32f3d0f6c9f/_result.png';
+const panasonicDuctedImg = 'https://image.qwenlm.ai/generated-images/09e653f5-4ec5-4641-8b13-ed8f38e826e3/_result.png';
+const panasonicMultiSplitImg = 'https://image.qwenlm.ai/generated-images/26743b58-46ec-4400-9edd-4dbbf2b558e3/_result.png';
+const panasonicProfessionalImg = 'https://image.qwenlm.ai/generated-images/462e8098-1418-4411-8bf1-b9394fb953e2/_result.png';
 const aquareaImg = 'https://image.qwenlm.ai/generated-images/7179235c-6d93-4cfa-83ba-456e0e5ac8f1/_result.png';
 const ecoiVrfImg = 'https://image.qwenlm.ai/generated-images/515d4f46-b20c-4a09-a54b-4a10bc71a57c/_result.png';
 const residentialLifeImg = 'https://image.qwenlm.ai/generated-images/75706634-c21a-45d5-93ba-e77cfb560606/_result.png';
@@ -80,12 +88,12 @@ interface Product {
 
 // ===== PRODUCT DATA =====
 const panasonicProducts: Product[] = [
-  { name: 'Etherea Z35 – 3,5 kW', power: '3,5 kW', series: 'Z35-ZKE', stock: 30, brand: 'Panasonic', variant: 'indoor', desc: 'Design premium con nanoe™ X, SEER fino a 9.5, SCOP 5.2. Operatività silenziosa a 19dB(A). Wi-Fi integrato.', features: ['nanoe™ X', 'A+++', '19dB(A)', 'Wi-Fi', 'EcoNavi', 'R32'], price: '€ 1.190', image: panasonicEthereaImg, category: 'panasonic' },
-  { name: 'Etherea Z25 – 2,5 kW', power: '2,5 kW', series: 'Z25-ZKE', stock: 30, brand: 'Panasonic', variant: 'indoor', desc: 'Il compatto di classe superiore. nanoe™ X per aria pura, Aerowings 2.0 per flusso ottimale.', features: ['nanoe™ X', 'A+++', '19dB(A)', 'Wi-Fi', 'Aerowings 2.0', 'R32'], price: '€ 990', image: panasonicEthereaImg, category: 'panasonic' },
+  { name: 'Etherea Z35 – 3,5 kW', power: '3,5 kW', series: 'Z35-ZKE', stock: 30, brand: 'Panasonic', variant: 'indoor', desc: 'Design premium con nanoe™ X, SEER fino a 9.5, SCOP 5.2. Operatività silenziosa a 19dB(A). Wi-Fi integrato.', features: ['nanoe™ X', 'A+++', '19dB(A)', 'Wi-Fi', 'EcoNavi', 'R32'], price: '€ 1.190', image: panasonicEthereaBiancoImg, category: 'panasonic' },
+  { name: 'Etherea Z25 – 2,5 kW', power: '2,5 kW', series: 'Z25-ZKE', stock: 30, brand: 'Panasonic', variant: 'indoor', desc: 'Il compatto di classe superiore. nanoe™ X per aria pura, Aerowings 2.0 per flusso ottimale.', features: ['nanoe™ X', 'A+++', '19dB(A)', 'Wi-Fi', 'Aerowings 2.0', 'R32'], price: '€ 990', image: panasonicEthereaBiancoImg, category: 'panasonic' },
   { name: 'TZ Super Compact – 3,5 kW', power: '3,5 kW', series: 'TZ35', stock: 30, brand: 'Panasonic', variant: 'indoor', desc: 'Design ultra-compatto 779mm. Ideale per spazi ridotti. Wi-Fi integrato con Comfort Cloud.', features: ['Compatto 779mm', 'A++', 'Wi-Fi', 'Voice Control', 'R32'], price: '€ 750', category: 'panasonic' },
   { name: 'Dual Split CU-2Z41 – 9+9', power: '4,1 kW', series: 'CU-2Z41CBE', stock: 20, brand: 'Panasonic', variant: 'outdoor', desc: 'Due unità interne con una esterna. Flessibilità totale per climatizzare più ambienti.', features: ['Dual Split', 'Inverter', 'R32', 'nanoe™ X', 'A++'], price: '€ 1.850', category: 'panasonic' },
   { name: 'Trial Split CU-3Z52 – 7+9+9', power: '5,2 kW', series: 'CU-3Z52CBE', stock: 10, brand: 'Panasonic', variant: 'outdoor', desc: 'Tre unità interne con una esterna. Soluzione completa per appartamenti.', features: ['Trial Split', 'Inverter', 'R32', 'nanoe™ X', 'A++'], price: '€ 2.690', category: 'panasonic' },
-  { name: 'Etherea XZ Black – 3,5 kW', power: '3,5 kW', series: 'XZ35-H', stock: 15, brand: 'Panasonic', variant: 'indoor', desc: 'Design anthracite premium. nanoe™ X, Aerowings 2.0, la scelta di design per interni moderni.', features: ['nanoe™ X', 'A+++', 'Design Nero', 'Wi-Fi', 'Aerowings 2.0', 'R32'], price: '€ 1.390', image: panasonicEthereaImg, category: 'panasonic' },
+  { name: 'Etherea XZ Black – 3,5 kW', power: '3,5 kW', series: 'XZ35-H', stock: 15, brand: 'Panasonic', variant: 'indoor', desc: 'Design anthracite premium. nanoe™ X, Aerowings 2.0, la scelta di design per interni moderni.', features: ['nanoe™ X', 'A+++', 'Design Nero', 'Wi-Fi', 'Aerowings 2.0', 'R32'], price: '€ 1.390', image: panasonicEthereaGrafiteImg, category: 'panasonic' },
 ];
 
 const tclProducts: Product[] = [
@@ -1055,7 +1063,7 @@ export default function App() {
         <ProfileChoiceSection onPrivatiSignup={() => setPrivatiSignup(true)} onProfessionistiSignup={() => setProfessionistiSignup(true)} />
         <PromotionsSection />
         <WellbeingSection />
-        <BrandSection id="panasonic" brandName="Panasonic" brandColor="bg-sky-600" tagline="Etherea • TZ • Multi-Split" description="Leader mondiale nella climatizzazione residenziale. La gamma Etherea con nanoe™ X offre aria pura, silenziosità a 19dB(A) e design premium. Sistemi multi-split fino a 5 unità interne." products={panasonicProducts} heroImg={panasonicEthereaImg} onProductClick={setSelectedProduct} />
+        <BrandSection id="panasonic" brandName="Panasonic" brandColor="bg-sky-600" tagline="Etherea • TZ • Multi-Split" description="Leader mondiale nella climatizzazione residenziale. La gamma Etherea con nanoe™ X offre aria pura, silenziosità a 19dB(A) e design premium. Sistemi multi-split fino a 5 unità interne." products={panasonicProducts} heroImg={panasonicEthereaBiancoImg} onProductClick={setSelectedProduct} />
         <BrandSection id="tcl" brandName="TCL" brandColor="bg-amber-600" tagline="BreezeIN • UNITARY • Hotel Mode" description="Innovazione e rapporto qualità-prezzo. La serie BreezeIN con Gentle Breeze offre 1422 micro-fori per un flusso d'aria delicato. Compatibile con Google Home, Alexa e TCL Home App." products={tclProducts} heroImg={tclBreezeInImg} onProductClick={setSelectedProduct} />
         <ProductComparison />
         <HeatersSection onProductClick={setSelectedProduct} />
