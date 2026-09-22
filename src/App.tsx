@@ -30,6 +30,11 @@ import { ManagementLogin } from './management/ManagementLogin';
 import { ManagementDashboard } from './management/ManagementDashboard';
 import { useAdminAuth } from './management/hooks/useAdminAuth';
 import { initializeTestAccounts } from './config/testAccounts';
+import { WishlistSection, ReviewsSection, CouponSystem, OrderTrackingAdvanced, LoyaltyProgram } from './EcommerceAdvanced';
+import { useGA4, useFacebookPixel, useGTM, useRemarketing, ReferralSystem, GamificationWidget } from './MarketingAdvanced';
+import { useSchemaMarkup, Breadcrumb, useMetaTags } from './SEOAdvanced';
+import { useServiceWorker, usePreloadResources, configureCDN } from './PerformanceAdvanced';
+import { panasonicProducts2026, tclProducts2026, multiSplitSystems } from './data/panasonicProducts2026';
 
 // ===== LIFESTYLE IMAGES =====
 const heroBg = 'https://images.unsplash.com/photo-1600585154340-be6161a56a0c?w=1920&h=1080&fit=crop&auto=format';
@@ -990,6 +995,16 @@ export default function App() {
   useWebVitals();
   preloadCriticalResources();
   
+  // Phase 4: SEO, Marketing & Performance Hooks
+  useSchemaMarkup();
+  useServiceWorker();
+  usePreloadResources();
+  useGA4();
+  useFacebookPixel();
+  useGTM();
+  useRemarketing();
+  configureCDN();
+  
   // Security Middleware Initialization
   useEffect(() => {
     securityMiddleware.initialize();
@@ -1060,9 +1075,18 @@ export default function App() {
         <TestimonialsSection />
         <GallerySection />
         
+        {/* Phase 4: E-commerce Avanzato */}
+        <WishlistSection />
+        <ReviewsSection />
+        <CouponSystem />
+        <OrderTrackingAdvanced />
+        <LoyaltyProgram />
+        <ReferralSystem />
+        
         {/* Phase 4: Marketing & Growth */}
         <LeadMagnetSection />
         <NewsletterSection />
+        <GamificationWidget />
         
         {/* Phase 3: Backend & Commerce */}
         {user && <UserDashboard />}
