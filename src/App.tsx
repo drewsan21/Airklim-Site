@@ -35,6 +35,10 @@ import { useGA4, useFacebookPixel, useGTM, useRemarketing, ReferralSystem, Gamif
 import { useSchemaMarkup, Breadcrumb, useMetaTags } from './SEOAdvanced';
 import { useServiceWorker, usePreloadResources, configureCDN } from './PerformanceAdvanced';
 import { panasonicProducts2026, tclProducts2026, multiSplitSystems } from './data/panasonicProducts2026';
+import { ARProductViewer, VirtualShowroom, Model3DViewer } from './ARVRExperience';
+import { TranslationProvider, LanguageCurrencySelector, GlobalPaymentGateway, InternationalShipping } from './International';
+import { ERPIntegration, AccountingIntegration, ShippingIntegration, AdvancedAnalytics, InventoryManagement, CustomerSupportIntegration } from './ThirdPartyIntegrations';
+import './MobileOptimization.css';
 
 // ===== LIFESTYLE IMAGES =====
 const heroBg = 'https://images.unsplash.com/photo-1600585154340-be6161a56a0c?w=1920&h=1080&fit=crop&auto=format';
@@ -1037,6 +1041,7 @@ export default function App() {
 
   return (
     <ErrorBoundary>
+    <TranslationProvider>
     <LanguageProvider>
     <div className="min-h-screen bg-black text-white">
       <Sidebar onPrivatiSignup={() => setPrivatiSignup(true)} onProfessionistiSignup={() => setProfessionistiSignup(true)} />
@@ -1082,6 +1087,21 @@ export default function App() {
         <OrderTrackingAdvanced />
         <LoyaltyProgram />
         <ReferralSystem />
+        
+        {/* Phase 5: AR/VR Experience */}
+        <VirtualShowroom />
+        
+        {/* Phase 5: International Expansion */}
+        <LanguageCurrencySelector />
+        <InternationalShipping />
+        
+        {/* Phase 5: Third-Party Integrations */}
+        <ERPIntegration />
+        <AccountingIntegration />
+        <ShippingIntegration />
+        <AdvancedAnalytics />
+        <InventoryManagement />
+        <CustomerSupportIntegration />
         
         {/* Phase 4: Marketing & Growth */}
         <LeadMagnetSection />
@@ -1198,6 +1218,7 @@ export default function App() {
       </Modal>
     </div>
     </LanguageProvider>
+    </TranslationProvider>
     </ErrorBoundary>
   );
 }
