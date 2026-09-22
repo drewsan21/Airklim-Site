@@ -1,0 +1,115 @@
+version: '3.8'
+
+services:
+  # PostgreSQL Database
+  postgres:
+    image: postgres:14-alpine
+    container_name: airklim-postgres
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: airklim
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+      - ./server/database/schema.sql:/docker-entrypoint-initdb.d/01-schema.sql
+      - ./server/database/seed.js:/docker-entrypoint-initdb.d/02-seed.js
+    networks:
+      - airklim-network
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  # Backend API
+  backend:
+    build:
+      context: ./server
+      dockerfile: Dockerfile
+    container_name: airklim-backend
+    environment:
+      NODE_ENV: development
+      PORT: 3000
+      DATABASE_URL: postgresql://postgres:postgres@postgres:5432/airklim
+      JWT_SECRET: your_super_secret_jwt_key_change_in_production
+      ALLOWED_ORIGINS: http://localhost:5173,http://localhost:3000
+    ports:
+      - "3000:3000"
+    volumes:
+      - ./server:/app
+      - /app/node_modules
+    depends_on:
+      postgres:
+        condition: service_healthy
+    networks:
+      - airklim-network
+    healthcheck:
+      test: ["CMD", "node", "-e", "require('http').get('http://localhost:3000/health', (r) => {process.exit(r.statusCode === 200 ? 0 : 1)})"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
+  # Frontend (Vite)
+  frontend:
+    build:
+      context: .
+      dockerfile: Dockerfile.frontend
+    container_name: airklim-frontend
+    environment:
+      VITE_API_URL: http://localhost:3000/api
+    ports:
+      - "5173:5173"
+    volumes:
+      - .:/app
+      - /app/node_modules
+    depends_on:
+      - backend
+    networks:
+      - airklim-network
+
+  # Redis (Optional - for caching)
+  redis:
+    image: redis:7-alpine
+    container_name: airklim-redis
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis_data:/data
+    networks:
+      - airklim-network
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  # Adminer (Database GUI)
+  adminer:
+    image: adminer:latest
+    container_name: airklim-adminer
+    ports:
+      - "8080:8080"
+    depends_on:
+      - postgres
+    networks:
+      - airklim-network
+
+  # MailHog (Email Testing)
+  mailhog:
+    image: mailhog/mailhog:latest
+    container_name: airklim-mailhog
+    ports:
+      - "1025:1025"  # SMTP
+      - "8025:8025"  # Web UI
+    networks:
+      - airklim-network
+
+volumes:
+  postgres_data:
+  redis_data:
+
+networks:
+  airklim-network:
+    driver: bridge
