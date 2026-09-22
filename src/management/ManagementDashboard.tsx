@@ -11,6 +11,9 @@ import { OrdersManagement } from './sections/OrdersManagement';
 import { ProductsManagement } from './sections/ProductsManagement';
 import { ContentManagement } from './sections/ContentManagement';
 import { AnalyticsManagement } from './sections/AnalyticsManagement';
+import { SettingsManagement } from './sections/SettingsManagement';
+import { AuditLogManagement } from './sections/AuditLogManagement';
+import { BackupManagement } from './sections/BackupManagement';
 import { AdminSection } from '../types/admin';
 
 export function ManagementDashboard() {
@@ -93,35 +96,11 @@ export function ManagementDashboard() {
 
           {activeSection === 'analytics' && <AnalyticsManagement />}
 
-          {activeSection === 'audit' && (
-            <div>
-              <h1 className="text-3xl font-bold text-white mb-2">Audit Log</h1>
-              <p className="text-white/50">Log di tutte le attività</p>
-              <div className="mt-8 p-8 rounded-2xl bg-white/5 border border-white/10 text-center">
-                <p className="text-white/60">Sezione in sviluppo...</p>
-              </div>
-            </div>
-          )}
+          {activeSection === 'audit' && <AuditLogManagement />}
 
-          {activeSection === 'backup' && (
-            <div>
-              <h1 className="text-3xl font-bold text-white mb-2">Backup</h1>
-              <p className="text-white/50">Gestisci backup del database</p>
-              <div className="mt-8 p-8 rounded-2xl bg-white/5 border border-white/10 text-center">
-                <p className="text-white/60">Sezione in sviluppo...</p>
-              </div>
-            </div>
-          )}
+          {activeSection === 'backup' && <BackupManagement />}
 
-          {activeSection === 'settings' && (
-            <div>
-              <h1 className="text-3xl font-bold text-white mb-2">Impostazioni</h1>
-              <p className="text-white/50">Configura la piattaforma</p>
-              <div className="mt-8 p-8 rounded-2xl bg-white/5 border border-white/10 text-center">
-                <p className="text-white/60">Sezione in sviluppo...</p>
-              </div>
-            </div>
-          )}
+          {activeSection === 'settings' && <SettingsManagement />}
         </main>
       </div>
     </div>
