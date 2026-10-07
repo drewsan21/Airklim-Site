@@ -1,52 +1,10 @@
 # ============================================================================
-# AIRKLIM - Git Ignore Configuration
+# AIRKLIM - Git Ignore Definitivo
 # ============================================================================
+# Questo file impedisce a Git di committare file non necessari
 
 # ============================================================================
-# UPLOADS - File caricati dall'utente (NON committare)
-# ============================================================================
-public/uploads/images/optimized/
-public/uploads/images/thumbnails/
-public/uploads/images/extracted/
-public/uploads/images/uploaded/
-public/uploads/catalogs/*.pdf
-public/uploads/catalogs/uploaded/
-
-# Mantieni solo le directory vuote con .gitkeep
-!public/uploads/images/.gitkeep
-!public/uploads/catalogs/.gitkeep
-
-# ============================================================================
-# DATI ESTRATTI - File generati automaticamente (NON committare)
-# ============================================================================
-data/extracted/
-data/extracted-products.json
-data/extractedProducts2026.ts
-data/categorized_products.json
-data/categorizedProducts2026.ts
-
-# ============================================================================
-# LOG E REPORT - File di log (NON committare)
-# ============================================================================
-logs/
-*.log
-*.log.*
-npm-debug.log*
-yarn-debug.log*
-yarn-error.log*
-pnpm-debug.log*
-lerna-debug.log*
-
-# ============================================================================
-# BACKUP - File di backup (NON committare)
-# ============================================================================
-backups/
-*.backup
-*.bak
-*.tmp
-
-# ============================================================================
-# NODE.JS - Dipendenze e build (NON committare)
+# DIPENDENZE E BUILD (NON COMMITTARE MAI)
 # ============================================================================
 node_modules/
 dist/
@@ -58,7 +16,7 @@ out/
 *.tsbuildinfo
 
 # ============================================================================
-# PYTHON - Virtual environment e cache (NON committare)
+# PYTHON (NON COMMITTARE)
 # ============================================================================
 venv/
 env/
@@ -86,10 +44,62 @@ coverage.xml
 *.pyo
 *.pyd
 .Python
-pip-log.txt
 
 # ============================================================================
-# ENVIRONMENT - Variabili d'ambiente (NON committare - CONTIENE SEGRETI)
+# FILE UPLOADATI DALL'UTENTE (NON COMMITTARE)
+# ============================================================================
+# Immagini caricate
+public/uploads/images/optimized/
+public/uploads/images/thumbnails/
+public/uploads/images/extracted/
+public/uploads/images/uploaded/
+
+# PDF caricati
+public/uploads/catalogs/*.pdf
+public/uploads/catalogs/uploaded/
+
+# Mantieni solo le directory vuote con .gitkeep
+!public/uploads/images/.gitkeep
+!public/uploads/catalogs/.gitkeep
+
+# ============================================================================
+# DATI ESTRATTI (NON COMMITTARE - generati automaticamente)
+# ============================================================================
+data/extracted/
+data/extracted-products.json
+data/extractedProducts2026.ts
+data/categorized_products.json
+data/categorizedProducts2026.ts
+
+# ============================================================================
+# LOG E REPORT (NON COMMITTARE)
+# ============================================================================
+logs/
+*.log
+*.log.*
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+lerna-debug.log*
+
+# ============================================================================
+# BACKUP (NON COMMITTARE)
+# ============================================================================
+backups/
+*.backup
+*.bak
+*.tmp
+*.temp
+
+# ============================================================================
+# DOCUMENTAZIONE GENERATA (NON COMMITTARE)
+# ============================================================================
+docs/generated/
+reports/
+
+# ============================================================================
+# ENVIRONMENT (NON COMMITTARE - CONTIENE SEGRETI)
 # ============================================================================
 .env
 .env.local
@@ -100,7 +110,7 @@ pip-log.txt
 *.local
 
 # ============================================================================
-# IDE E EDITOR - Configurazioni specifiche (NON committare)
+# IDE E EDITOR (NON COMMITTARE)
 # ============================================================================
 .vscode/
 .idea/
@@ -115,7 +125,7 @@ pip-log.txt
 .history/
 
 # ============================================================================
-# SISTEMA OPERATIVO - File di sistema (NON committare)
+# SISTEMA OPERATIVO (NON COMMITTARE)
 # ============================================================================
 .DS_Store
 .DS_Store?
@@ -128,7 +138,7 @@ Desktop.ini
 $RECYCLE.BIN/
 
 # ============================================================================
-# TESTING - Coverage e report test (NON committare)
+# TESTING (NON COMMITTARE)
 # ============================================================================
 coverage/
 *.lcov
@@ -137,14 +147,14 @@ junit.xml
 test-results/
 
 # ============================================================================
-# DATABASE - File database locali (NON committare)
+# DATABASE (NON COMMITTARE)
 # ============================================================================
 *.db
 *.sqlite
 *.sqlite3
 
 # ============================================================================
-# TEMPORARY FILES - File temporanei (NON committare)
+# FILE TEMPORANEI (NON COMMITTARE)
 # ============================================================================
 *.tmp
 *.temp
@@ -153,28 +163,105 @@ test-results/
 .\#*
 
 # ============================================================================
-# GENERATED FILES - File generati automaticamente (NON committare)
+# FILE GENERATI AUTOMATICAMENTE (NON COMMITTARE)
 # ============================================================================
 *.generated.*
 *.min.js
 *.min.css
-sitemap.xml
-robots.txt
 
 # ============================================================================
-# DOCUMENTATION GENERATED - Documentazione generata (OPZIONALE)
+# DOCUMENTAZIONE RIDONDANTE (NON COMMITTARE)
 # ============================================================================
-# Se vuoi committare la documentazione generata, rimuovi il commento
-# docs/generated/
-# reports/
+# Mantieni solo README.md e CONTRIBUTING.md
+FASE*_COMPLETATA.md
+PRIORITA_*_COMPLETATA.md
+PROGETTO_*.md
+REPORT_*.md
+SISTEMA_*.md
+STATO_*.md
+PIANO_*.md
+GUIDA_*.md
+MANUALE_*.md
+QUICK_*.md
+COMPLETAMENTO_*.md
+ISTRUZIONI_*.md
+GITHUB_*.md
+UPLOAD_*.md
+SOLUZIONE_*.md
+SCANSIONE_*.md
 
 # ============================================================================
-# MISC - Varie (NON committare)
+# FILE GRANDI (NON COMMITTARE - GitHub limite 100MB)
 # ============================================================================
-*.seed
-*.pid
-*.pid.lock
-*.tgz
-.npm
-.eslintcache
-.stylelintcache
+*.zip
+*.tar
+*.gz
+*.rar
+*.7z
+*.iso
+*.dmg
+*.exe
+*.msi
+*.pkg
+*.deb
+*.rpm
+
+# ============================================================================
+# IMMAGINI GRANDI (NON COMMITTARE)
+# ============================================================================
+public/uploads/images/**/*.psd
+public/uploads/images/**/*.ai
+public/uploads/images/**/*.sketch
+public/uploads/images/**/*.fig
+
+# ============================================================================
+# VIDEO (NON COMMITTARE)
+# ============================================================================
+*.mp4
+*.avi
+*.mov
+*.wmv
+*.flv
+*.mkv
+*.webm
+
+# ============================================================================
+# AUDIO (NON COMMITTARE)
+# ============================================================================
+*.mp3
+*.wav
+*.ogg
+*.flac
+*.aac
+
+# ============================================================================
+# ARCHIVI (NON COMMITTARE)
+# ============================================================================
+*.zip
+*.tar
+*.gz
+*.rar
+*.7z
+
+# ============================================================================
+# NOTE FINALI
+# ============================================================================
+# Questo .gitignore è stato ottimizzato per:
+# 1. Ridurre la dimensione del repository
+# 2. Evitare errori di push su GitHub
+# 3. Mantenere solo i file essenziali
+# 4. Proteggere dati sensibili
+#
+# File che DEVONO essere committati:
+# - src/ (codice sorgente)
+# - server/ (backend)
+# - scripts/ (script di automazione)
+# - public/ (asset statici, ma non uploads)
+# - README.md
+# - CONTRIBUTING.md
+# - package.json
+# - requirements.txt
+# - .env.example
+# - setup.sh
+# - start_server.sh
+# ============================================================================
