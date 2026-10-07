@@ -1,40 +1,180 @@
-# Uploads - Immagini e PDF caricati dall'utente
+# ============================================================================
+# AIRKLIM - Git Ignore Configuration
+# ============================================================================
+
+# ============================================================================
+# UPLOADS - File caricati dall'utente (NON committare)
+# ============================================================================
 public/uploads/images/optimized/
 public/uploads/images/thumbnails/
 public/uploads/images/extracted/
+public/uploads/images/uploaded/
 public/uploads/catalogs/*.pdf
+public/uploads/catalogs/uploaded/
 
-# Dati estratti automaticamente
+# Mantieni solo le directory vuote con .gitkeep
+!public/uploads/images/.gitkeep
+!public/uploads/catalogs/.gitkeep
+
+# ============================================================================
+# DATI ESTRATTI - File generati automaticamente (NON committare)
+# ============================================================================
+data/extracted/
 data/extracted-products.json
 data/extractedProducts2026.ts
+data/categorized_products.json
+data/categorizedProducts2026.ts
 
-# Log e report
+# ============================================================================
+# LOG E REPORT - File di log (NON committare)
+# ============================================================================
 logs/
 *.log
+*.log.*
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+lerna-debug.log*
 
-# Backup
+# ============================================================================
+# BACKUP - File di backup (NON committare)
+# ============================================================================
 backups/
+*.backup
+*.bak
+*.tmp
 
-# Node modules
+# ============================================================================
+# NODE.JS - Dipendenze e build (NON committare)
+# ============================================================================
 node_modules/
-
-# Build
 dist/
+build/
+.next/
+out/
+.nuxt/
+.cache/
+*.tsbuildinfo
 
-# Environment
+# ============================================================================
+# PYTHON - Virtual environment e cache (NON committare)
+# ============================================================================
+venv/
+env/
+ENV/
+.venv/
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+pip-log.txt
+pip-delete-this-directory.txt
+.tox/
+.nox/
+.coverage
+.coverage.*
+.cache
+nosetests.xml
+coverage.xml
+*.cover
+*.py,cover
+.hypothesis/
+.pytest_cache/
+*.pyc
+*.pyo
+*.pyd
+.Python
+pip-log.txt
+
+# ============================================================================
+# ENVIRONMENT - Variabili d'ambiente (NON committare - CONTIENE SEGRETI)
+# ============================================================================
 .env
 .env.local
+.env.development.local
+.env.test.local
+.env.production.local
 .env.*.local
+*.local
 
-# IDE
+# ============================================================================
+# IDE E EDITOR - Configurazioni specifiche (NON committare)
+# ============================================================================
 .vscode/
 .idea/
 *.swp
 *.swo
 *~
+.project
+.classpath
+.settings/
+*.sublime-project
+*.sublime-workspace
+.history/
 
-# OS
+# ============================================================================
+# SISTEMA OPERATIVO - File di sistema (NON committare)
+# ============================================================================
 .DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
 Thumbs.db
-.next/
-build/
+Desktop.ini
+$RECYCLE.BIN/
+
+# ============================================================================
+# TESTING - Coverage e report test (NON committare)
+# ============================================================================
+coverage/
+*.lcov
+.nyc_output/
+junit.xml
+test-results/
+
+# ============================================================================
+# DATABASE - File database locali (NON committare)
+# ============================================================================
+*.db
+*.sqlite
+*.sqlite3
+
+# ============================================================================
+# TEMPORARY FILES - File temporanei (NON committare)
+# ============================================================================
+*.tmp
+*.temp
+~*
+\#*\#
+.\#*
+
+# ============================================================================
+# GENERATED FILES - File generati automaticamente (NON committare)
+# ============================================================================
+*.generated.*
+*.min.js
+*.min.css
+sitemap.xml
+robots.txt
+
+# ============================================================================
+# DOCUMENTATION GENERATED - Documentazione generata (OPZIONALE)
+# ============================================================================
+# Se vuoi committare la documentazione generata, rimuovi il commento
+# docs/generated/
+# reports/
+
+# ============================================================================
+# MISC - Varie (NON committare)
+# ============================================================================
+*.seed
+*.pid
+*.pid.lock
+*.tgz
+.npm
+.eslintcache
+.stylelintcache
