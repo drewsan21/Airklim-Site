@@ -15,6 +15,7 @@ export function AdminSidebar({ activeSection, onSectionChange }: AdminSidebarPro
     { id: 'analytics' as AdminSection, label: 'Analytics', icon: '📈' },
     { id: 'audit' as AdminSection, label: 'Audit Log', icon: '📋' },
     { id: 'backup' as AdminSection, label: 'Backup', icon: '💾' },
+    { id: 'media' as AdminSection, label: 'Media', icon: '📁' },
     { id: 'settings' as AdminSection, label: 'Impostazioni', icon: '⚙️' },
   ];
 

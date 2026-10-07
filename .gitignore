@@ -1,5 +1,40 @@
-node_modules/
-.next/
-dist/
-build/
+# Uploads - Immagini e PDF caricati dall'utente
+public/uploads/images/optimized/
+public/uploads/images/thumbnails/
+public/uploads/images/extracted/
+public/uploads/catalogs/*.pdf
+
+# Dati estratti automaticamente
+data/extracted-products.json
+data/extractedProducts2026.ts
+
+# Log e report
+logs/
 *.log
+
+# Backup
+backups/
+
+# Node modules
+node_modules/
+
+# Build
+dist/
+
+# Environment
+.env
+.env.local
+.env.*.local
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# OS
+.DS_Store
+Thumbs.db
+.next/
+build/
