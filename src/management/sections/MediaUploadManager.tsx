@@ -1,4 +1,6 @@
 import { useState, useRef, useEffect } from 'react';
+import ScannerStatus from '../../components/ScannerStatus';
+import ScannedProductsViewer from '../../components/ScannedProductsViewer';
 
 export function MediaUploadManager() {
   const [activeTab, setActiveTab] = useState<'images' | 'pdfs'>('images');
@@ -336,6 +338,12 @@ export function MediaUploadManager() {
           )}
         </div>
       )}
+
+      {/* Scanner Status Component */}
+      <ScannerStatus />
+
+      {/* Scanned Products Viewer */}
+      <ScannedProductsViewer />
 
       {/* Instructions */}
       <div className="bg-gradient-to-br from-sky-500/10 to-blue-600/10 rounded-2xl border border-sky-500/20 p-6">
