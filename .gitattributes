@@ -1,0 +1,160 @@
+# ============================================================================
+# AIRKLIM - Git Attributes Configuration
+# ============================================================================
+# Questo file definisce come Git deve gestire i diversi tipi di file.
+# Aiuta a ottimizzare il repository per GitHub.
+
+# ============================================================================
+# FILE DI TESTO - Normalizza line endings
+# ============================================================================
+* text=auto
+
+# ============================================================================
+# FILE SORGENTE - Tratta come testo
+# ============================================================================
+# JavaScript/TypeScript
+*.js text eol=lf
+*.jsx text eol=lf
+*.ts text eol=lf
+*.tsx text eol=lf
+*.mjs text eol=lf
+
+# CSS/SCSS
+*.css text eol=lf
+*.scss text eol=lf
+*.sass text eol=lf
+*.less text eol=lf
+
+# HTML
+*.html text eol=lf
+*.htm text eol=lf
+
+# JSON
+*.json text eol=lf
+*.jsonc text eol=lf
+
+# Markdown
+*.md text eol=lf
+*.markdown text eol=lf
+
+# YAML
+*.yml text eol=lf
+*.yaml text eol=lf
+
+# Python
+*.py text eol=lf
+*.pyi text eol=lf
+*.pyw text eol=lf
+
+# Shell scripts
+*.sh text eol=lf
+*.bash text eol=lf
+*.zsh text eol=lf
+
+# Configuration files
+*.txt text eol=lf
+*.cfg text eol=lf
+*.conf text eol=lf
+*.config text eol=lf
+*.ini text eol=lf
+*.toml text eol=lf
+
+# XML
+*.xml text eol=lf
+*.xsl text eol=lf
+*.xslt text eol=lf
+*.svg text eol=lf
+
+# SQL
+*.sql text eol=lf
+
+# ============================================================================
+# FILE BINARI - Non trattare come testo
+# ============================================================================
+# Images
+*.png binary
+*.jpg binary
+*.jpeg binary
+*.gif binary
+*.ico binary
+*.webp binary
+*.avif binary
+*.svgz binary
+
+# Fonts
+*.woff binary
+*.woff2 binary
+*.ttf binary
+*.otf binary
+*.eot binary
+
+# Documents
+*.pdf binary
+*.doc binary
+*.docx binary
+*.xls binary
+*.xlsx binary
+*.ppt binary
+*.pptx binary
+
+# Archives
+*.zip binary
+*.tar binary
+*.gz binary
+*.rar binary
+*.7z binary
+
+# Media
+*.mp3 binary
+*.mp4 binary
+*.avi binary
+*.mov binary
+*.webm binary
+
+# ============================================================================
+# FILE SPECIFICI - Override per file specifici
+# ============================================================================
+# Package lock files - Tratta come testo per diff migliore
+package-lock.json text
+yarn.lock text
+pnpm-lock.yaml text
+
+# Requirements files
+requirements.txt text
+Pipfile text
+Pipfile.lock text
+
+# ============================================================================
+# FILE GENERATI - Non mostrare diff
+# ============================================================================
+# Build output
+dist/** -diff
+build/** -diff
+.next/** -diff
+
+# Minified files
+*.min.js -diff
+*.min.css -diff
+
+# Generated documentation
+docs/generated/** -diff
+
+# ============================================================================
+# FILE LARGE - Usa Git LFS (se configurato)
+# ============================================================================
+# Se hai Git LFS configurato, decommenta queste righe:
+# public/uploads/images/**/*.jpg filter=lfs diff=lfs merge=lfs -text
+# public/uploads/images/**/*.png filter=lfs diff=lfs merge=lfs -text
+# public/uploads/catalogs/**/*.pdf filter=lfs diff=lfs merge=lfs -text
+
+# ============================================================================
+# NOTE
+# ============================================================================
+# - I file binari non vengono normalizzati (line endings)
+# - I file di testo vengono normalizzati a LF (Unix-style)
+# - I file generati non mostrano diff per evitare rumore
+# - Se usi Git LFS, i file grandi vengono memorizzati separatamente
+#
+# Per maggiori informazioni:
+# https://git-scm.com/docs/gitattributes
+# https://docs.github.com/en/repositories/working-with-files/managing-files/configuring-git-handle-line-endings

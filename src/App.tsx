@@ -36,22 +36,15 @@ import { useSchemaMarkup, Breadcrumb, useMetaTags } from './SEOAdvanced';
 import { useServiceWorker, usePreloadResources, configureCDN } from './PerformanceAdvanced';
 import { panasonicProducts2026, tclProducts2026, multiSplitSystems } from './data/panasonicProducts2026';
 import { 
-  catalogoCompleto2026, 
   getAllProducts, 
   getProductsByCategory,
-  ethereaXZGrafite,
-  ethereaZBianco,
-  tzSuperCompatta,
-  consoleAPavimento,
-  canalizzataBassaPressione,
-  professionale25C,
-  tclBreezeIn,
-  unitaEsterne,
-  accessori
+  getProductsByBrand,
+  getProductStats
 } from './data/completeProducts2026';
 import { ARProductViewer, VirtualShowroom, Model3DViewer } from './ARVRExperience';
 import { TranslationProvider, LanguageCurrencySelector, GlobalPaymentGateway, InternationalShipping } from './International';
 import { ERPIntegration, AccountingIntegration, ShippingIntegration, AdvancedAnalytics, InventoryManagement, CustomerSupportIntegration } from './ThirdPartyIntegrations';
+import { CompleteProductCatalog } from './CompleteProductCatalog';
 import './MobileOptimization.css';
 
 // ===== LIFESTYLE IMAGES =====
@@ -1168,6 +1161,9 @@ export default function App() {
         
         {/* Phase 3: Backend & Commerce */}
         {user && <UserDashboard />}
+        
+        {/* Complete Product Catalog - 45 prodotti Panasonic + TCL */}
+        <CompleteProductCatalog />
         
         <Footer onNavigate={handleNavigate} />
       </main>

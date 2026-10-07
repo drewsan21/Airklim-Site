@@ -25,6 +25,7 @@ const analyticsRoutes = require('./routes/analytics');
 const backupRoutes = require('./routes/backups');
 const settingsRoutes = require('./routes/settings');
 const auditRoutes = require('./routes/audit');
+const analyzeRoutes = require('./routes/analyze');
 
 // Import middleware
 const { errorHandler } = require('./middleware/errorHandler');
@@ -138,6 +139,7 @@ app.use('/api/analytics', analyticsRoutes);
 app.use('/api/backups', backupRoutes);
 app.use('/api/settings', settingsRoutes);
 app.use('/api/audit', auditRoutes);
+app.use('/api/analyze', analyzeRoutes);
 
 // Health check
 app.get('/health', (req, res) => {

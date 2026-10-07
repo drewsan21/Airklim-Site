@@ -1,0 +1,9 @@
+# Questa directory contiene le immagini prodotti caricate dall'utente
+# Le immagini vengono organizzate automaticamente in sottodirectory:
+# - panasonic/ (immagini prodotti Panasonic)
+# - tcl/ (immagini prodotti TCL)
+# - accessori/ (immagini accessori)
+# - optimized/ (immagini ottimizzate - generate automaticamente)
+# - thumbnails/ (thumbnail - generate automaticamente)
+# - extracted/ (immagini estratte dai PDF - generate automaticamente)
+# - uploaded/ (immagini caricate via web)
