@@ -104,4 +104,5 @@ export type AdminSection =
   | 'analytics'
   | 'audit'
   | 'backup'
+  | 'media'
   | 'settings';

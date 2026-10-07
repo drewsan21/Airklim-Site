@@ -14,6 +14,7 @@ import { AnalyticsManagement } from './sections/AnalyticsManagement';
 import { SettingsManagement } from './sections/SettingsManagement';
 import { AuditLogManagement } from './sections/AuditLogManagement';
 import { BackupManagement } from './sections/BackupManagement';
+import { MediaUploadManager } from './sections/MediaUploadManager';
 import { AdminSection } from '../types/admin';
 
 export function ManagementDashboard() {
@@ -99,6 +100,8 @@ export function ManagementDashboard() {
           {activeSection === 'audit' && <AuditLogManagement />}
 
           {activeSection === 'backup' && <BackupManagement />}
+
+          {activeSection === 'media' && <MediaUploadManager />}
 
           {activeSection === 'settings' && <SettingsManagement />}
         </main>
