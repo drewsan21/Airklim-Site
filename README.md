@@ -4,6 +4,49 @@ Sito e-commerce completo per la distribuzione di climatizzatori Panasonic e TCL 
 
 ---
 
+## ⚡ Quick Start (2 COMANDI)
+
+### 1. Setup Completo (UN SOLO COMANDO)
+```bash
+./setup.sh
+```
+
+Questo script installa automaticamente:
+- ✅ Tutte le dipendenze Node.js
+- ✅ Virtual environment Python
+- ✅ Tutte le dipendenze Python
+- ✅ Directory necessarie
+- ✅ Configurazione ambiente
+- ✅ Build iniziale
+
+### 2. Avvio Server (UN SOLO COMANDO)
+```bash
+./start_server.sh
+```
+
+Questo script avvia automaticamente:
+- ✅ Server backend (Node.js)
+- ✅ Server frontend (Vite)
+- ✅ Database (se configurato)
+
+### 3. Apri il Browser
+```
+Frontend: http://localhost:5173
+Admin: http://localhost:5173/#admin
+Login: admin@example.com / Admin@123!
+```
+
+### 4. Carica File e Analizza
+1. Vai su **Admin Dashboard** → **📁 Media**
+2. Carica immagini o PDF nell'area di upload
+3. L'app analizza automaticamente in background
+4. I prodotti vengono estratti e categorizzati
+5. Monitora lo stato dell'analisi in tempo reale
+
+**Fatto!** 🎉
+
+---
+
 ## ✨ Caratteristiche Principali
 
 ### 🎨 Frontend
