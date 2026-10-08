@@ -1,16 +1,17 @@
 import { useState } from 'react';
 import { useAuth, useCart, useOrders } from './hooks';
 
-// ===== AUTH MODAL =====
+// ===== AUTH MODAL (quick login/register; full flows live on /#/signup-business, /#/signup-individual, /#/login) =====
 export function AuthModal({ isOpen, onClose }: { isOpen: boolean; onClose: () => void }) {
   const [mode, setMode] = useState<'login' | 'register'>('login');
+  const [accountType, setAccountType] = useState<'individual' | 'business'>('individual');
   const [formData, setFormData] = useState({
     email: '',
     password: '',
     name: '',
     surname: '',
     phone: '',
-    role: 'privato' as 'privato' | 'professionista',
+    city: '',
     company: '',
     vatNumber: '',
   });
@@ -20,6 +21,11 @@ export function AuthModal({ isOpen, onClose }: { isOpen: boolean; onClose: () =>
 
   if (!isOpen) return null;
 
+  const navigateTo = (hash: string) => {
+    window.location.hash = hash;
+    onClose();
+  };
+
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     setMessage(null);
@@ -28,12 +34,23 @@ export function AuthModal({ isOpen, onClose }: { isOpen: boolean; onClose: () =>
       const result = login(formData.email, formData.password);
       if (result.success) {
         setMessage({ type: 'success', text: result.message });
-        setTimeout(() => onClose(), 1500);
+        setTimeout(() => onClose(), 1200);
       } else {
         setMessage({ type: 'error', text: result.message });
       }
     } else {
-      const result = register(formData);
+      const result = register({
+        email: formData.email,
+        password: formData.password,
+        name: formData.name,
+        surname: formData.surname,
+        phone: formData.phone,
+        city: formData.city || undefined,
+        accountType,
+        business: accountType === 'business'
+          ? { company: formData.company, vatNumber: formData.vatNumber, city: formData.city }
+          : undefined,
+      });
       if (result.success) {
         setMessage({ type: 'success', text: result.message });
         setTimeout(() => onClose(), 1500);
@@ -53,7 +70,7 @@ export function AuthModal({ isOpen, onClose }: { isOpen: boolean; onClose: () =>
         <div className="mb-6">
           <h2 className="text-2xl font-bold text-white mb-2">{mode === 'login' ? 'Accedi' : 'Registrati'}</h2>
           <p className="text-white/50 text-sm">
-            {mode === 'login' ? 'Accedi al tuo account AIRKLIM' : 'Crea un nuovo account AIRKLIM'}
+            {mode === 'login' ? 'Accedi al tuo account AIRKLIM (Business o Individual)' : 'Crea un nuovo account AIRKLIM'}
           </p>
         </div>
 
@@ -94,37 +111,46 @@ export function AuthModal({ isOpen, onClose }: { isOpen: boolean; onClose: () =>
               <div className="flex gap-2">
                 <button
                   type="button"
-                  onClick={() => setFormData({ ...formData, role: 'privato' })}
-                  className={`flex-1 px-4 py-2 rounded-lg text-sm font-medium transition-all ${formData.role === 'privato' ? 'bg-sky-500 text-white' : 'bg-white/5 text-white/60'}`}
+                  onClick={() => setAccountType('individual')}
+                  className={`flex-1 px-4 py-2 rounded-lg text-sm font-medium transition-all ${accountType === 'individual' ? 'bg-sky-500 text-white' : 'bg-white/5 text-white/60'}`}
                 >
-                  🏠 Privato
+                  🏠 Individual
                 </button>
                 <button
                   type="button"
-                  onClick={() => setFormData({ ...formData, role: 'professionista' })}
-                  className={`flex-1 px-4 py-2 rounded-lg text-sm font-medium transition-all ${formData.role === 'professionista' ? 'bg-amber-500 text-white' : 'bg-white/5 text-white/60'}`}
+                  onClick={() => setAccountType('business')}
+                  className={`flex-1 px-4 py-2 rounded-lg text-sm font-medium transition-all ${accountType === 'business' ? 'bg-amber-500 text-white' : 'bg-white/5 text-white/60'}`}
                 >
-                  🏢 Professionista
+                  🏢 Business
                 </button>
               </div>
-              {formData.role === 'professionista' && (
+              {accountType === 'business' && (
                 <>
                   <input
                     type="text"
-                    placeholder="Azienda"
+                    required
+                    placeholder="Ragione Sociale *"
                     value={formData.company}
                     onChange={(e) => setFormData({ ...formData, company: e.target.value })}
                     className="w-full px-4 py-3 rounded-xl bg-white/5 border border-white/10 text-white placeholder-white/30 focus:border-sky-500 outline-none"
                   />
                   <input
                     type="text"
-                    placeholder="Partita IVA"
+                    required
+                    placeholder="Partita IVA * (11 cifre)"
                     value={formData.vatNumber}
                     onChange={(e) => setFormData({ ...formData, vatNumber: e.target.value })}
                     className="w-full px-4 py-3 rounded-xl bg-white/5 border border-white/10 text-white placeholder-white/30 focus:border-sky-500 outline-none"
                   />
                 </>
               )}
+              <input
+                type="text"
+                placeholder="Città (es. Palermo)"
+                value={formData.city}
+                onChange={(e) => setFormData({ ...formData, city: e.target.value })}
+                className="w-full px-4 py-3 rounded-xl bg-white/5 border border-white/10 text-white placeholder-white/30 focus:border-sky-500 outline-none"
+              />
             </>
           )}
           <input
@@ -148,11 +174,14 @@ export function AuthModal({ isOpen, onClose }: { isOpen: boolean; onClose: () =>
           </button>
         </form>
 
-        <div className="mt-6 text-center text-sm text-white/50">
+        <div className="mt-6 text-center text-sm text-white/50 space-y-2">
           {mode === 'login' ? (
             <>
-              Non hai un account?{' '}
-              <button onClick={() => setMode('register')} className="text-sky-400 hover:underline">Registrati</button>
+              <p>Non hai un account?</p>
+              <div className="flex gap-2 justify-center">
+                <button onClick={() => navigateTo('signup-individual')} className="px-3 py-1.5 rounded-lg bg-sky-500/10 text-sky-400 border border-sky-500/20 hover:bg-sky-500/20">🏠 Signup Individual</button>
+                <button onClick={() => navigateTo('signup-business')} className="px-3 py-1.5 rounded-lg bg-amber-500/10 text-amber-400 border border-amber-500/20 hover:bg-amber-500/20">🏢 Signup Business</button>
+              </div>
             </>
           ) : (
             <>
@@ -171,14 +200,17 @@ export function CartSidebar({ isOpen, onClose }: { isOpen: boolean; onClose: () 
   const { items, removeItem, updateQuantity, total, clearCart } = useCart();
   const { user } = useAuth();
   const { createOrder } = useOrders();
+  const isBusiness = user?.accountType === 'business';
   const [showCheckout, setShowCheckout] = useState(false);
-  const [orderComplete, setOrderComplete] = useState(false);
+  const [placedOrder, setPlacedOrder] = useState<{ id: string; installer?: { name: string; phone: string; city: string; distanceKm: number; certified: boolean } } | null>(null);
 
   if (!isOpen) return null;
 
   const handleCheckout = () => {
     if (!user) {
-      alert('Effettua il login per procedere con l\'acquisto');
+      // Send the shopper to the proper login/signup flow instead of a dead alert
+      window.location.hash = 'login';
+      onClose();
       return;
     }
     setShowCheckout(true);
@@ -190,14 +222,14 @@ export function CartSidebar({ isOpen, onClose }: { isOpen: boolean; onClose: () 
     const formData = new FormData(e.target as HTMLFormElement);
     const address = formData.get('address') as string;
     
-    createOrder(user.id, items, total, address);
+    const order = createOrder(user, items, total, address);
     clearCart();
-    setOrderComplete(true);
+    setPlacedOrder({ id: order.id, installer: order.installer });
     setTimeout(() => {
       onClose();
       setShowCheckout(false);
-      setOrderComplete(false);
-    }, 3000);
+      setPlacedOrder(null);
+    }, 12000);
   };
 
   return (
@@ -210,20 +242,37 @@ export function CartSidebar({ isOpen, onClose }: { isOpen: boolean; onClose: () 
           </button>
         </div>
 
-        {orderComplete ? (
+        {placedOrder ? (
           <div className="p-8 text-center">
             <div className="w-16 h-16 mx-auto mb-4 rounded-full bg-green-500/20 flex items-center justify-center">
               <svg className="w-8 h-8 text-green-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" /></svg>
             </div>
             <h3 className="text-xl font-bold text-white mb-2">Ordine Confermato!</h3>
-            <p className="text-white/50">Riceverai una email di conferma a breve.</p>
+            <p className="text-white/50 mb-1">Ordine <span className="text-sky-400 font-semibold">{placedOrder.id}</span></p>
+            <p className="text-white/50 mb-4">Riceverai una email di conferma a breve.</p>
+            {placedOrder.installer ? (
+              <div className="mt-4 p-4 rounded-xl bg-sky-500/10 border border-sky-500/20 text-left">
+                <div className="text-sm font-bold text-sky-400 mb-1">🔧 Installatore collegato automaticamente</div>
+                <div className="text-white text-sm font-semibold">{placedOrder.installer.name} {placedOrder.installer.certified && <span className="text-sky-400">✓ Certificato</span>}</div>
+                <div className="text-white/50 text-xs mt-1">{placedOrder.installer.city} • a ~{placedOrder.installer.distanceKm} km da te</div>
+                <a href={'tel:' + placedOrder.installer.phone.replace(/\s/g,'')} className="inline-block mt-2 text-sky-400 text-sm font-medium hover:text-sky-300">{placedOrder.installer.phone}</a>
+                <p className="text-white/40 text-xs mt-2">L'installatore ti contatterà per concordare data e modalità di posa in opera.</p>
+              </div>
+            ) : (
+              <div className="mt-4 p-4 rounded-xl bg-amber-500/10 border border-amber-500/20 text-left">
+                <div className="text-sm font-bold text-amber-400">🏢 Acquisto Business (B2B)</div>
+                <p className="text-white/50 text-xs mt-1">La merce verrà spedita alla tua sede. Preparala per i tuoi cantieri!</p>
+              </div>
+            )}
           </div>
         ) : showCheckout ? (
           <form onSubmit={handleConfirmOrder} className="p-6 space-y-4">
-            <h3 className="text-lg font-bold text-white mb-4">Indirizzo di Spedizione</h3>
+            <h3 className="text-lg font-bold text-white mb-1">{isBusiness ? 'Consegna alla sede aziendale' : 'Indirizzo di Spedizione / Installazione'}</h3>
+            <p className="text-xs text-white/40 mb-4">{isBusiness ? 'Listino B2B: spedizione senza installazione.' : 'In base alla località ti collegheremo automaticamente il miglior installatore certificato della zona.'}</p>
             <textarea
               name="address"
               required
+              defaultValue={isBusiness ? ((user as any)?.business?.officeAddress || user?.address || '') : (user?.address || '')}
               placeholder="Via, numero civico, CAP, città, provincia"
               rows={4}
               className="w-full px-4 py-3 rounded-xl bg-white/5 border border-white/10 text-white placeholder-white/30 focus:border-sky-500 outline-none resize-none"

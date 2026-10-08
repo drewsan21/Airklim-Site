@@ -1,0 +1,30 @@
+// ===== LIFESTYLE IMAGES =====
+export const heroBg = 'https://images.unsplash.com/photo-1600585154340-be6161a56a0c?w=1920&h=1080&fit=crop&auto=format';
+export const familyHome = 'https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?w=1200&h=800&fit=crop&auto=format';
+export const officeComfort = 'https://images.unsplash.com/photo-1497366216548-37526070297c?w=1200&h=800&fit=crop&auto=format';
+export const happyFamily = 'https://images.unsplash.com/photo-1511895426328-dc87141913bf?w=1200&h=800&fit=crop&auto=format';
+export const modernLiving = 'https://images.unsplash.com/photo-1600210492486-724fe5c67fb0?w=1200&h=800&fit=crop&auto=format';
+export const coupleRelax = 'https://images.unsplash.com/photo-1556909114-f6e7ad7d3136?w=1200&h=800&fit=crop&auto=format';
+export const shopComfort = 'https://images.unsplash.com/photo-1441986300917-64674bd600d8?w=1200&h=800&fit=crop&auto=format';
+export const bedroomPeace = 'https://images.unsplash.com/photo-1616594039964-ae9021a400a0?w=1200&h=800&fit=crop&auto=format';
+export const kidsPlay = 'https://images.unsplash.com/photo-1587653263995-422546a7a569?w=1200&h=800&fit=crop&auto=format';
+export const restaurantGuest = 'https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?w=1200&h=800&fit=crop&auto=format';
+export const gymWorkout = 'https://images.unsplash.com/photo-1534438327276-14e5300c3a48?w=1200&h=800&fit=crop&auto=format';
+export const hotelRoom = 'https://images.unsplash.com/photo-1618773928121-c32242e63f39?w=1200&h=800&fit=crop&auto=format';
+
+// ===== PRODUCT IMAGES (AI Generated - Realistic representations) =====
+export const panasonicEthereaGrafiteImg = 'https://image.qwenlm.ai/generated-images/3cede363-8c0b-4c62-a90c-e57b8be72ac4/_result.png';
+export const panasonicEthereaBiancoImg = 'https://image.qwenlm.ai/generated-images/0344a503-3274-47e9-a2f9-a05dca659478/_result.png';
+export const panasonicTZImg = 'https://image.qwenlm.ai/generated-images/444b17e9-4ab5-47bb-9a9b-51773b24201b/_result.png';
+export const panasonicConsoleImg = 'https://image.qwenlm.ai/generated-images/118e5893-f86f-4e74-a045-e7703867764f/_result.png';
+export const panasonicOutdoorImg = 'https://image.qwenlm.ai/generated-images/77c536f0-d834-4016-9e6f-eb8e7cef1d7d/_result.png';
+export const panasonicRemoteImg = 'https://image.qwenlm.ai/generated-images/ee13d7b2-36c6-4975-b54e-a572d53afa01/_result.png';
+export const tclBreezeInImg = 'https://image.qwenlm.ai/generated-images/9ff41c71-172b-42b6-bfca-d32f3d0f6c9f/_result.png';
+export const panasonicDuctedImg = 'https://image.qwenlm.ai/generated-images/09e653f5-4ec5-4641-8b13-ed8f38e826e3/_result.png';
+export const panasonicMultiSplitImg = 'https://image.qwenlm.ai/generated-images/26743b58-46ec-4400-9edd-4dbbf2b558e3/_result.png';
+export const panasonicProfessionalImg = 'https://image.qwenlm.ai/generated-images/462e8098-1418-4411-8bf1-b9394fb953e2/_result.png';
+export const aquareaImg = 'https://image.qwenlm.ai/generated-images/7179235c-6d93-4cfa-83ba-456e0e5ac8f1/_result.png';
+export const ecoiVrfImg = 'https://image.qwenlm.ai/generated-images/515d4f46-b20c-4a09-a54b-4a10bc71a57c/_result.png';
+export const residentialLifeImg = 'https://image.qwenlm.ai/generated-images/75706634-c21a-45d5-93ba-e77cfb560606/_result.png';
+export const commercialLifeImg = 'https://image.qwenlm.ai/generated-images/434fb2dd-75c0-4b05-99a5-7a0004000853/_result.png';
+export const proPartnerBadge = 'https://image.qwenlm.ai/generated-images/46d68b15-8c7e-440f-965f-51820042b687/_result.png';

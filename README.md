@@ -1,5 +1,17 @@
 # 🚀 AIRKLIM - E-commerce Climatizzazione Professionale
 
+## 🪟 Avvio su Windows
+
+Il sito è completamente compatibile con Windows. Nella cartella del progetto trovi due script pronti all'uso:
+
+1. **`install.bat`** — doppio clic per installare tutte le dipendenze (richiede [Node.js 18+](https://nodejs.org/)) ed eseguire la build iniziale.
+2. **`start.bat`** — doppio clic per avviare il sito: apre automaticamente il browser su **http://localhost:5173**. Ferma il sito con `CTRL+C` nella finestra apertasi.
+
+Se `start.bat` rileva che le dipendenze non sono ancora installate, esegue automaticamente `install.bat`.
+
+> Richiamo rapido da terminale: `npm install` poi `npm run dev -- --host` (sviluppo) oppure `npm run build` + `npm run preview` (produzione).
+
+
 Sito e-commerce completo per la distribuzione di climatizzatori Panasonic e TCL in Sicilia, con sistema di analisi automatica PDF e immagini, categorizzazione intelligente e dashboard admin completa.
 
 ---
