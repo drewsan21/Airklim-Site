@@ -1,10 +1,1 @@
-# Dependencies
-node_modules/
-
-# Build outputs
-dist/
-
-# Logs & OS
-*.log
-.DS_Store
-Thumbs.db
+(empty)
