@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback } from 'react';
+import { useState, useEffect, useCallback, lazy, Suspense, type ComponentType, type FormEvent, type ReactNode } from 'react';
 import {
   ContoTermicoCalculator,
   BTUCalculator,
@@ -11,157 +11,75 @@ import {
   OrderTracking,
   InstallerMap
 } from './Features';
-import { CookieBanner } from './CookieBanner';
-import { LegalPages } from './LegalPages';
-import { BlogSection } from './Blog';
-import { VideoSection } from './VideoSection';
-import { TestimonialsSection } from './TestimonialsSection';
-import { GallerySection } from './GallerySection';
-import { AuthModal, CartSidebar, UserDashboard } from './Commerce';
-import { BusinessSignupPage, IndividualSignupPage, LoginPage, DashboardPage } from './AuthPages';
 import { useAuth, useCart } from './hooks';
-import { LeadMagnetSection, SmartPopupSystem, NewsletterSection, SocialSharing } from './Marketing';
 import { LanguageProvider, LanguageSwitcher } from './LanguageContext';
-import { EmailAutomationSystem, AnalyticsDashboard } from './Analytics';
 import { useWebVitals, preloadCriticalResources } from './Performance';
-import { NPSSurvey, FeedbackWidget, UsabilityTestRecorder } from './UXResearch';
-import { ErrorBoundary, useErrorHandler, usePerformanceMonitoring, UptimeMonitor, ErrorLogViewer } from './ErrorTracking';
 import { securityMiddleware } from './security';
-import { ManagementLogin } from './management/ManagementLogin';
-import { ManagementDashboard } from './management/ManagementDashboard';
 import { useAdminAuth } from './management/hooks/useAdminAuth';
-import { initializeTestAccounts } from './config/testAccounts';
-import { WishlistSection, ReviewsSection, CouponSystem, OrderTrackingAdvanced, LoyaltyProgram } from './EcommerceAdvanced';
 import { useGA4, useFacebookPixel, useGTM, useRemarketing, ReferralSystem, GamificationWidget } from './MarketingAdvanced';
-import { useSchemaMarkup, Breadcrumb, useMetaTags } from './SEOAdvanced';
-import { useServiceWorker, usePreloadResources, configureCDN } from './PerformanceAdvanced';
-import { panasonicProducts2026, tclProducts2026, multiSplitSystems } from './data/panasonicProducts2026';
-import { 
-  getAllProducts, 
-  getProductsByCategory,
-  getProductsByBrand,
-  getProductStats
-} from './data/completeProducts2026';
-import { ARProductViewer, VirtualShowroom, Model3DViewer } from './ARVRExperience';
-import { TranslationProvider, LanguageCurrencySelector, GlobalPaymentGateway, InternationalShipping } from './International';
-import { ERPIntegration, AccountingIntegration, ShippingIntegration, AdvancedAnalytics, InventoryManagement, CustomerSupportIntegration } from './ThirdPartyIntegrations';
-import { CompleteProductCatalog } from './CompleteProductCatalog';
+import { useSchemaMarkup } from './SEOAdvanced';
+import { TranslationProvider, LanguageCurrencySelector, InternationalShipping } from './International';
+import {
+  Product,
+  panasonicProducts,
+  tclProducts,
+  heaterProducts,
+  commercialProducts,
+} from './data/homeProducts';
+import { heroBg, familyHome, happyFamily, modernLiving, bedroomPeace, kidsPlay, panasonicEthereaBiancoImg, tclBreezeInImg, aquareaImg, ecoiVrfImg, residentialLifeImg, commercialLifeImg, proPartnerBadge } from './data/productImages';
 import './MobileOptimization.css';
 
-// ===== LIFESTYLE IMAGES =====
-const heroBg = 'https://images.unsplash.com/photo-1600585154340-be6161a56a0c?w=1920&h=1080&fit=crop&auto=format';
-const familyHome = 'https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?w=1200&h=800&fit=crop&auto=format';
-const officeComfort = 'https://images.unsplash.com/photo-1497366216548-37526070297c?w=1200&h=800&fit=crop&auto=format';
-const happyFamily = 'https://images.unsplash.com/photo-1511895426328-dc87141913bf?w=1200&h=800&fit=crop&auto=format';
-const modernLiving = 'https://images.unsplash.com/photo-1600210492486-724fe5c67fb0?w=1200&h=800&fit=crop&auto=format';
-const coupleRelax = 'https://images.unsplash.com/photo-1556909114-f6e7ad7d3136?w=1200&h=800&fit=crop&auto=format';
-const shopComfort = 'https://images.unsplash.com/photo-1441986300917-64674bd600d8?w=1200&h=800&fit=crop&auto=format';
-const bedroomPeace = 'https://images.unsplash.com/photo-1616594039964-ae9021a400a0?w=1200&h=800&fit=crop&auto=format';
-const kidsPlay = 'https://images.unsplash.com/photo-1587653263995-422546a7a569?w=1200&h=800&fit=crop&auto=format';
-const restaurantGuest = 'https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?w=1200&h=800&fit=crop&auto=format';
-const gymWorkout = 'https://images.unsplash.com/photo-1534438327276-14e5300c3a48?w=1200&h=800&fit=crop&auto=format';
-const hotelRoom = 'https://images.unsplash.com/photo-1618773928121-c32242e63f39?w=1200&h=800&fit=crop&auto=format';
+// ===== Code-split: route-only components (loaded on demand) =====
+const ManagementLogin = lazy(() => import('./management/ManagementLogin').then(m => ({ default: m.ManagementLogin })));
+const ManagementDashboard = lazy(() => import('./management/ManagementDashboard').then(m => ({ default: m.ManagementDashboard })));
+const BusinessSignupPage = lazy(() => import('./AuthPages').then(m => ({ default: m.BusinessSignupPage })));
+const IndividualSignupPage = lazy(() => import('./AuthPages').then(m => ({ default: m.IndividualSignupPage })));
+const LoginPage = lazy(() => import('./AuthPages').then(m => ({ default: m.LoginPage })));
+const DashboardPage = lazy(() => import('./AuthPages').then(m => ({ default: m.DashboardPage })));
+const initializeTestAccounts = () => import('./config/testAccounts');
 
-// ===== PRODUCT IMAGES (AI Generated - Realistic representations) =====
-const panasonicEthereaGrafiteImg = 'https://image.qwenlm.ai/generated-images/3cede363-8c0b-4c62-a90c-e57b8be72ac4/_result.png';
-const panasonicEthereaBiancoImg = 'https://image.qwenlm.ai/generated-images/0344a503-3274-47e9-a2f9-a05dca659478/_result.png';
-const panasonicTZImg = 'https://image.qwenlm.ai/generated-images/444b17e9-4ab5-47bb-9a9b-51773b24201b/_result.png';
-const panasonicConsoleImg = 'https://image.qwenlm.ai/generated-images/118e5893-f86f-4e74-a045-e7703867764f/_result.png';
-const panasonicOutdoorImg = 'https://image.qwenlm.ai/generated-images/77c536f0-d834-4016-9e6f-eb8e7cef1d7d/_result.png';
-const panasonicRemoteImg = 'https://image.qwenlm.ai/generated-images/ee13d7b2-36c6-4975-b54e-a572d53afa01/_result.png';
-const tclBreezeInImg = 'https://image.qwenlm.ai/generated-images/9ff41c71-172b-42b6-bfca-d32f3d0f6c9f/_result.png';
-const panasonicDuctedImg = 'https://image.qwenlm.ai/generated-images/09e653f5-4ec5-4641-8b13-ed8f38e826e3/_result.png';
-const panasonicMultiSplitImg = 'https://image.qwenlm.ai/generated-images/26743b58-46ec-4400-9edd-4dbbf2b558e3/_result.png';
-const panasonicProfessionalImg = 'https://image.qwenlm.ai/generated-images/462e8098-1418-4411-8bf1-b9394fb953e2/_result.png';
-const aquareaImg = 'https://image.qwenlm.ai/generated-images/7179235c-6d93-4cfa-83ba-456e0e5ac8f1/_result.png';
-const ecoiVrfImg = 'https://image.qwenlm.ai/generated-images/515d4f46-b20c-4a09-a54b-4a10bc71a57c/_result.png';
-const residentialLifeImg = 'https://image.qwenlm.ai/generated-images/75706634-c21a-45d5-93ba-e77cfb560606/_result.png';
-const commercialLifeImg = 'https://image.qwenlm.ai/generated-images/434fb2dd-75c0-4b05-99a5-7a0004000853/_result.png';
-const proPartnerBadge = 'https://image.qwenlm.ai/generated-images/46d68b15-8c7e-440f-965f-51820042b687/_result.png';
+// ===== Code-split: below-the-fold sections & deferred UI =====
+const CookieBanner = lazy(() => import('./CookieBanner').then(m => ({ default: m.CookieBanner })));
+const LegalPages = lazy(() => import('./LegalPages').then(m => ({ default: m.LegalPages })));
+const BlogSection = lazy(() => import('./Blog').then(m => ({ default: m.BlogSection })));
+const VideoSection = lazy(() => import('./VideoSection').then(m => ({ default: m.VideoSection })));
+const TestimonialsSection = lazy(() => import('./TestimonialsSection').then(m => ({ default: m.TestimonialsSection })));
+const GallerySection = lazy(() => import('./GallerySection').then(m => ({ default: m.GallerySection })));
+const AuthModal = lazy(() => import('./Commerce').then(m => ({ default: m.AuthModal })));
+const CartSidebar = lazy(() => import('./Commerce').then(m => ({ default: m.CartSidebar })));
+const UserDashboard = lazy(() => import('./Commerce').then(m => ({ default: m.UserDashboard })));
+const LeadMagnetSection = lazy(() => import('./Marketing').then(m => ({ default: m.LeadMagnetSection })));
+const SmartPopupSystem = lazy(() => import('./Marketing').then(m => ({ default: m.SmartPopupSystem })));
+const NewsletterSection = lazy(() => import('./Marketing').then(m => ({ default: m.NewsletterSection })));
+const SocialSharing = lazy(() => import('./Marketing').then(m => ({ default: m.SocialSharing })));
+const EmailAutomationSystem = lazy(() => import('./Analytics').then(m => ({ default: m.EmailAutomationSystem })));
+const AnalyticsDashboard = lazy(() => import('./Analytics').then(m => ({ default: m.AnalyticsDashboard })));
+const NPSSurvey = lazy(() => import('./UXResearch').then(m => ({ default: m.NPSSurvey })));
+const FeedbackWidget = lazy(() => import('./UXResearch').then(m => ({ default: m.FeedbackWidget })));
+const UsabilityTestRecorder = lazy(() => import('./UXResearch').then(m => ({ default: m.UsabilityTestRecorder })));
+const ErrorBoundary = lazy(() => import('./ErrorTracking').then(m => ({ default: m.ErrorBoundary })));
+const UptimeMonitor = lazy(() => import('./ErrorTracking').then(m => ({ default: m.UptimeMonitor })));
+const ErrorLogViewer = lazy(() => import('./ErrorTracking').then(m => ({ default: m.ErrorLogViewer })));
+import { useErrorHandler, usePerformanceMonitoring } from './ErrorTracking';
+import { useServiceWorker, usePreloadResources, configureCDN } from './PerformanceAdvanced';
+const WishlistSection = lazy(() => import('./EcommerceAdvanced').then(m => ({ default: m.WishlistSection })));
+const ReviewsSection = lazy(() => import('./EcommerceAdvanced').then(m => ({ default: m.ReviewsSection })));
+const CouponSystem = lazy(() => import('./EcommerceAdvanced').then(m => ({ default: m.CouponSystem })));
+const OrderTrackingAdvanced = lazy(() => import('./EcommerceAdvanced').then(m => ({ default: m.OrderTrackingAdvanced })));
+const LoyaltyProgram = lazy(() => import('./EcommerceAdvanced').then(m => ({ default: m.LoyaltyProgram })));
+const VirtualShowroom = lazy(() => import('./ARVRExperience').then(m => ({ default: m.VirtualShowroom })));
+const ERPIntegration = lazy(() => import('./ThirdPartyIntegrations').then(m => ({ default: m.ERPIntegration })));
+const AccountingIntegration = lazy(() => import('./ThirdPartyIntegrations').then(m => ({ default: m.AccountingIntegration })));
+const ShippingIntegration = lazy(() => import('./ThirdPartyIntegrations').then(m => ({ default: m.ShippingIntegration })));
+const AdvancedAnalytics = lazy(() => import('./ThirdPartyIntegrations').then(m => ({ default: m.AdvancedAnalytics })));
+const InventoryManagement = lazy(() => import('./ThirdPartyIntegrations').then(m => ({ default: m.InventoryManagement })));
+const CustomerSupportIntegration = lazy(() => import('./ThirdPartyIntegrations').then(m => ({ default: m.CustomerSupportIntegration })));
+const CompleteProductCatalog = lazy(() => import('./CompleteProductCatalog').then(m => ({ default: m.CompleteProductCatalog })));
 
-// ===== TYPES =====
-interface Product {
-  name: string;
-  power: string;
-  series: string;
-  stock: number;
-  brand: string;
-  variant: 'indoor' | 'outdoor';
-  desc: string;
-  features: string[];
-  price?: string;
-  image?: string;
-  category: string;
-}
-
-// ===== PRODUCT DATA =====
-// ===== CATALOGO COMPLETO PANASONIC 2026 - Tutti i prodotti dal PDF =====
-const panasonicProducts: Product[] = [
-  // ETHEREA XZ GRIGIO GRAFITE (4 modelli)
-  { name: 'Etherea XZ20 Grigio Grafite', power: '2,0 kW', series: 'CS-XZ20CKEW-H', stock: 25, brand: 'Panasonic', variant: 'indoor', desc: 'Etherea XZ 2.0 kW Grigio Grafite con nanoe™ X Mark 3: 48 trilioni di radicali ossidrilici al secondo.', features: ['nanoe™ X Mark 3', 'Aerowings 2.0', 'AI ECO', 'Wi-Fi', '19 dB(A)', '-20°C'], price: '€ 1.290', image: panasonicEthereaGrafiteImg, category: 'panasonic' },
-  { name: 'Etherea XZ25 Grigio Grafite', power: '2,5 kW', series: 'CS-XZ25CKEW-H', stock: 30, brand: 'Panasonic', variant: 'indoor', desc: 'Etherea XZ 2.5 kW Grigio Grafite. SEER 9.5 A+++ e 19 dB(A) di silenziosità.', features: ['nanoe™ X Mark 3', 'Aerowings 2.0', 'AI ECO', 'Wi-Fi', '19 dB(A)', '-20°C'], price: '€ 1.390', image: panasonicEthereaGrafiteImg, category: 'panasonic' },
-  { name: 'Etherea XZ35 Grigio Grafite', power: '3,5 kW', series: 'CS-XZ35CKEW-H', stock: 35, brand: 'Panasonic', variant: 'indoor', desc: 'Etherea XZ 3.5 kW Grigio Grafite. Top di gamma per efficienza e comfort.', features: ['nanoe™ X Mark 3', 'Aerowings 2.0', 'AI ECO', 'Wi-Fi', '19 dB(A)', '-20°C'], price: '€ 1.590', image: panasonicEthereaGrafiteImg, category: 'panasonic' },
-  { name: 'Etherea XZ50 Grigio Grafite', power: '5,0 kW', series: 'CS-XZ50CKEW-H', stock: 20, brand: 'Panasonic', variant: 'indoor', desc: 'Etherea XZ 5.0 kW Grigio Grafite per ambienti medio-grandi.', features: ['nanoe™ X Mark 3', 'Aerowings 2.0', 'AI ECO', 'Wi-Fi', '21 dB(A)', '-20°C'], price: '€ 1.890', image: panasonicEthereaGrafiteImg, category: 'panasonic' },
-  
-  // ETHEREA Z BIANCO (6 modelli)
-  { name: 'Etherea Z20 Bianco', power: '2,0 kW', series: 'CS-Z20CKEW', stock: 40, brand: 'Panasonic', variant: 'indoor', desc: 'Etherea Z 2.0 kW Bianco Opaco. Eleganza e prestazioni.', features: ['nanoe™ X Mark 3', 'Aerowings 2.0', 'AI ECO', 'Wi-Fi', '19 dB(A)', '-20°C'], price: '€ 1.090', image: panasonicEthereaBiancoImg, category: 'panasonic' },
-  { name: 'Etherea Z25 Bianco', power: '2,5 kW', series: 'CS-Z25CKEW', stock: 45, brand: 'Panasonic', variant: 'indoor', desc: 'Etherea Z 2.5 kW Bianco. Best seller per efficienza A+++.', features: ['nanoe™ X Mark 3', 'Aerowings 2.0', 'AI ECO', 'Wi-Fi', '19 dB(A)', '-20°C'], price: '€ 1.190', image: panasonicEthereaBiancoImg, category: 'panasonic' },
-  { name: 'Etherea Z35 Bianco', power: '3,5 kW', series: 'CS-Z35CKEW', stock: 50, brand: 'Panasonic', variant: 'indoor', desc: 'Etherea Z 3.5 kW Bianco. Il modello più venduto.', features: ['nanoe™ X Mark 3', 'Aerowings 2.0', 'AI ECO', 'Wi-Fi', '19 dB(A)', '-20°C'], price: '€ 1.390', image: panasonicEthereaBiancoImg, category: 'panasonic' },
-  { name: 'Etherea Z50 Bianco', power: '5,0 kW', series: 'CS-Z50CKEW', stock: 25, brand: 'Panasonic', variant: 'indoor', desc: 'Etherea Z 5.0 kW Bianco per ambienti grandi.', features: ['nanoe™ X Mark 3', 'Aerowings 2.0', 'AI ECO', 'Wi-Fi', '21 dB(A)', '-20°C'], price: '€ 1.690', image: panasonicEthereaBiancoImg, category: 'panasonic' },
-  { name: 'Etherea Z60 Bianco', power: '6,0 kW', series: 'CS-Z60CKEW', stock: 15, brand: 'Panasonic', variant: 'indoor', desc: 'Etherea Z 6.0 kW Bianco per open space.', features: ['nanoe™ X Mark 3', 'Aerowings 2.0', 'AI ECO', 'Wi-Fi', '23 dB(A)', '-20°C'], price: '€ 1.990', image: panasonicEthereaBiancoImg, category: 'panasonic' },
-  { name: 'Etherea Z71 Bianco', power: '7,1 kW', series: 'CS-Z71CKEW', stock: 10, brand: 'Panasonic', variant: 'indoor', desc: 'Etherea Z 7.1 kW Bianco. Massima potenza residenziale.', features: ['nanoe™ X Mark 3', 'Aerowings 2.0', 'AI ECO', 'Wi-Fi', '25 dB(A)', '-20°C'], price: '€ 2.290', image: panasonicEthereaBiancoImg, category: 'panasonic' },
-  
-  // TZ SUPER-COMPATTA (4 modelli)
-  { name: 'TZ20 Super-Compatta', power: '2,0 kW', series: 'CS-TZ20CKEW', stock: 50, brand: 'Panasonic', variant: 'indoor', desc: 'TZ 2.0 kW super-compatta. Solo 765mm di larghezza.', features: ['nanoe™ X Mark 2', 'Aerowings', 'Wi-Fi', '20 dB(A)', '765mm', '-15°C'], price: '€ 890', image: panasonicTZImg, category: 'panasonic' },
-  { name: 'TZ25 Super-Compatta', power: '2,5 kW', series: 'CS-TZ25CKEW', stock: 55, brand: 'Panasonic', variant: 'indoor', desc: 'TZ 2.5 kW super-compatta. Ideale per spazi ridotti.', features: ['nanoe™ X Mark 2', 'Aerowings', 'Wi-Fi', '20 dB(A)', '765mm', '-15°C'], price: '€ 990', image: panasonicTZImg, category: 'panasonic' },
-  { name: 'TZ35 Super-Compatta', power: '3,5 kW', series: 'CS-TZ35CKEW', stock: 60, brand: 'Panasonic', variant: 'indoor', desc: 'TZ 3.5 kW super-compatta. Best seller per rapporto qualità-prezzo.', features: ['nanoe™ X Mark 2', 'Aerowings', 'Wi-Fi', '20 dB(A)', '765mm', '-15°C'], price: '€ 1.190', image: panasonicTZImg, category: 'panasonic' },
-  { name: 'TZ50 Super-Compatta', power: '5,0 kW', series: 'CS-TZ50CKEW', stock: 30, brand: 'Panasonic', variant: 'indoor', desc: 'TZ 5.0 kW super-compatta. Potenza in formato compatto.', features: ['nanoe™ X Mark 2', 'Aerowings', 'Wi-Fi', '22 dB(A)', '765mm', '-15°C'], price: '€ 1.390', image: panasonicTZImg, category: 'panasonic' },
-  
-  // CONSOLE A PAVIMENTO (3 modelli)
-  { name: 'Console Z25 a Pavimento', power: '2,5 kW', series: 'CS-Z25CEAW', stock: 20, brand: 'Panasonic', variant: 'indoor', desc: 'Console 2.5 kW a pavimento. Design elegante premiato con iF Design Award.', features: ['nanoe™ X Mark 3', 'Doppio flusso', 'Wi-Fi', '20 dB(A)', 'iF Award', '-15°C'], price: '€ 1.490', image: panasonicConsoleImg, category: 'panasonic' },
-  { name: 'Console Z35 a Pavimento', power: '3,5 kW', series: 'CS-Z35CEAW', stock: 25, brand: 'Panasonic', variant: 'indoor', desc: 'Console 3.5 kW a pavimento. Ideale per ristrutturazioni.', features: ['nanoe™ X Mark 3', 'Doppio flusso', 'Wi-Fi', '20 dB(A)', 'iF Award', '-15°C'], price: '€ 1.690', image: panasonicConsoleImg, category: 'panasonic' },
-  { name: 'Console Z50 a Pavimento', power: '5,0 kW', series: 'CS-Z50CEAW', stock: 15, brand: 'Panasonic', variant: 'indoor', desc: 'Console 5.0 kW a pavimento. Sostituzione termosifoni.', features: ['nanoe™ X Mark 3', 'Doppio flusso', 'Wi-Fi', '22 dB(A)', 'iF Award', '-15°C'], price: '€ 1.990', image: panasonicConsoleImg, category: 'panasonic' },
-  
-  // CANALIZZATA BASSA PRESSIONE (3 modelli)
-  { name: 'Canalizzata Z25 Bassa Pressione', power: '2,5 kW', series: 'CS-Z25CD3EAW', stock: 15, brand: 'Panasonic', variant: 'indoor', desc: 'Canalizzata 2.5 kW ultra-sottile (200mm). Per controsoffitti ridotti.', features: ['200mm altezza', '7 mmAq', 'KNX/Modbus', 'Pompa scarico', 'Timer', 'A++'], price: '€ 1.790', image: panasonicDuctedImg, category: 'panasonic' },
-  { name: 'Canalizzata Z35 Bassa Pressione', power: '3,5 kW', series: 'CS-Z35CD3EAW', stock: 18, brand: 'Panasonic', variant: 'indoor', desc: 'Canalizzata 3.5 kW ultra-sottile. Per applicazioni commerciali.', features: ['200mm altezza', '7 mmAq', 'KNX/Modbus', 'Pompa scarico', 'Timer', 'A++'], price: '€ 1.990', image: panasonicDuctedImg, category: 'panasonic' },
-  { name: 'Canalizzata Z50 Bassa Pressione', power: '5,0 kW', series: 'CS-Z50CD3EAW', stock: 12, brand: 'Panasonic', variant: 'indoor', desc: 'Canalizzata 5.0 kW ultra-sottile. Per grandi ambienti.', features: ['200mm altezza', '7 mmAq', 'KNX/Modbus', 'Pompa scarico', 'Timer', 'A++'], price: '€ 2.290', image: panasonicDuctedImg, category: 'panasonic' },
-  
-  // PROFESSIONALE -25°C (3 modelli)
-  { name: 'Professionale Z25 -25°C', power: '2,5 kW', series: 'CS-Z25YKEA-1', stock: 12, brand: 'Panasonic', variant: 'indoor', desc: 'Professionale 2.5 kW per sale server. Operatività 24/7 fino a -25°C.', features: ['24/7 operation', '-25°C', 'Comando filo', 'BMS', 'SEER 9.5', 'A+++'], price: '€ 1.690', image: panasonicProfessionalImg, category: 'panasonic' },
-  { name: 'Professionale Z35 -25°C', power: '3,5 kW', series: 'CS-Z35YKEA-1', stock: 10, brand: 'Panasonic', variant: 'indoor', desc: 'Professionale 3.5 kW per sale server. Massima affidabilità.', features: ['24/7 operation', '-25°C', 'Comando filo', 'BMS', 'SEER 9.5', 'A+++'], price: '€ 1.890', image: panasonicProfessionalImg, category: 'panasonic' },
-  { name: 'Professionale Z50 -25°C', power: '5,0 kW', series: 'CS-Z50YKEA-1', stock: 8, brand: 'Panasonic', variant: 'indoor', desc: 'Professionale 5.0 kW per data center. Potenza e affidabilità.', features: ['24/7 operation', '-25°C', 'Comando filo', 'BMS', 'SEER 8.5', 'A+++'], price: '€ 2.190', image: panasonicProfessionalImg, category: 'panasonic' },
-  
-  // MULTI-SPLIT (7 sistemi)
-  { name: 'Dual Split 2Z35', power: '3,5 kW', series: 'CU-2Z35HBE', stock: 15, brand: 'Panasonic', variant: 'outdoor', desc: 'Sistema Dual Split per 2 ambienti con controllo indipendente.', features: ['2 unità', '6.0 kW max', 'Indipendente', 'R32', 'A++', '5 anni'], price: '€ 2.190', image: panasonicMultiSplitImg, category: 'panasonic' },
-  { name: 'Dual Split 2Z41', power: '4,1 kW', series: 'CU-2Z41CBE', stock: 12, brand: 'Panasonic', variant: 'outdoor', desc: 'Sistema Dual Split 4.1 kW per appartamenti.', features: ['2 unità', '7.0 kW max', 'Indipendente', 'R32', 'A++', '5 anni'], price: '€ 2.390', image: panasonicMultiSplitImg, category: 'panasonic' },
-  { name: 'Trial Split 3Z52', power: '5,2 kW', series: 'CU-3Z52HBE', stock: 10, brand: 'Panasonic', variant: 'outdoor', desc: 'Sistema Trial Split per 3 ambienti.', features: ['3 unità', '9.5 kW max', 'Indipendente', 'R32', 'A++', '5 anni'], price: '€ 2.990', image: panasonicMultiSplitImg, category: 'panasonic' },
-  { name: 'Trial Split 3Z68', power: '6,8 kW', series: 'CU-3Z68HBE', stock: 8, brand: 'Panasonic', variant: 'outdoor', desc: 'Sistema Trial Split 6.8 kW per ville.', features: ['3 unità', '10.5 kW max', 'Indipendente', 'R32', 'A++', '5 anni'], price: '€ 3.290', image: panasonicMultiSplitImg, category: 'panasonic' },
-  { name: 'Quad Split 4Z68', power: '6,8 kW', series: 'CU-4Z68HBE', stock: 8, brand: 'Panasonic', variant: 'outdoor', desc: 'Sistema Quad Split per 4 ambienti.', features: ['4 unità', '11.5 kW max', 'Indipendente', 'R32', 'A++', '5 anni'], price: '€ 3.790', image: panasonicMultiSplitImg, category: 'panasonic' },
-  { name: 'Quad Split 4Z100', power: '10,0 kW', series: 'CU-4Z100HBE', stock: 5, brand: 'Panasonic', variant: 'outdoor', desc: 'Sistema Quad Split 10 kW per grandi appartamenti.', features: ['4 unità', '14.0 kW max', 'Indipendente', 'R32', 'A++', '5 anni'], price: '€ 4.490', image: panasonicMultiSplitImg, category: 'panasonic' },
-  { name: 'Penta Split 5Z100', power: '10,0 kW', series: 'CU-5Z100HBE', stock: 4, brand: 'Panasonic', variant: 'outdoor', desc: 'Sistema Penta Split per 5 ambienti. Massima flessibilità.', features: ['5 unità', '15.0 kW max', 'Indipendente', 'R32', 'A++', '5 anni'], price: '€ 4.990', image: panasonicMultiSplitImg, category: 'panasonic' },
-];
-// ===== CATALOGO COMPLETO TCL 2026 - Tutti i prodotti =====
-const tclProducts: Product[] = [
-  // TCL BREEZEIN (4 modelli)
-  { name: 'TCL BreezeIN 9000 BTU', power: '2,6 kW', series: 'S09P5S0', stock: 60, brand: 'TCL', variant: 'indoor', desc: 'TCL BreezeIN 9000 BTU con Gentle Breeze: 1422 micro-fori per flusso delicato.', features: ['Gentle Breeze', 'Wi-Fi', 'A++', 'Self-Clean', 'Google/Alexa', 'R32'], price: '€ 590', image: tclBreezeInImg, category: 'tcl' },
-  { name: 'TCL BreezeIN 12000 BTU', power: '3,5 kW', series: 'S12P5S0', stock: 70, brand: 'TCL', variant: 'indoor', desc: 'TCL BreezeIN 12000 BTU. Best seller per rapporto qualità-prezzo.', features: ['Gentle Breeze', 'Wi-Fi', 'A++', 'Self-Clean', 'Google/Alexa', 'R32'], price: '€ 690', image: tclBreezeInImg, category: 'tcl' },
-  { name: 'TCL BreezeIN 18000 BTU', power: '5,0 kW', series: 'S18P5S0', stock: 40, brand: 'TCL', variant: 'indoor', desc: 'TCL BreezeIN 18000 BTU per ambienti medio-grandi.', features: ['Gentle Breeze', 'Wi-Fi', 'A++', 'Self-Clean', 'Google/Alexa', 'R32'], price: '€ 890', image: tclBreezeInImg, category: 'tcl' },
-  { name: 'TCL BreezeIN 24000 BTU', power: '7,0 kW', series: 'S24P5S0', stock: 25, brand: 'TCL', variant: 'indoor', desc: 'TCL BreezeIN 24000 BTU per grandi ambienti.', features: ['Gentle Breeze', 'Wi-Fi', 'A++', 'Self-Clean', 'Google/Alexa', 'R32'], price: '€ 1.090', image: tclBreezeInImg, category: 'tcl' },
-];
-const heaterProducts: Product[] = [
-  { name: 'Aquarea Monoblocco L 9kW', power: '9 kW', series: 'L Series', stock: 10, brand: 'Panasonic', variant: 'outdoor', desc: 'Pompa di calore aria-acqua monoblocco. Riscaldamento, raffrescamento e ACS. SCOP 5.12. Funziona fino a -28°C.', features: ['Monoblocco', 'SCOP 5.12', '-28°C', 'R32', 'A+++', 'Wi-Fi'], price: '€ 4.990', image: aquareaImg, category: 'heaters' },
-  { name: 'Aquarea Monoblocco L 12kW', power: '12 kW', series: 'L Series', stock: 8, brand: 'Panasonic', variant: 'outdoor', desc: 'Potenza superiore per abitazioni più grandi. Riscaldamento a pavimento o radiatori.', features: ['Monoblocco', 'SCOP 5.12', '-28°C', 'R32', 'A+++', 'Wi-Fi'], price: '€ 5.990', image: aquareaImg, category: 'heaters' },
-  { name: 'Aquarea Split K 9kW', power: '9 kW', series: 'K Series', stock: 10, brand: 'Panasonic', variant: 'outdoor', desc: 'Sistema split con unità interna ed esterna. Installazione flessibile, massimo comfort.', features: ['Split', 'SCOP 4.8', '-20°C', 'R32', 'A+++', 'Aquarea Smart'], price: '€ 4.490', category: 'heaters' },
-  { name: 'Aquarea Big M 25kW', power: '25 kW', series: 'M Series', stock: 5, brand: 'Panasonic', variant: 'outdoor', desc: 'Per grandi edifici e applicazioni commerciali. R290 refrigerante naturale. SCOP 5.22.', features: ['Big Capacity', 'SCOP 5.22', 'R290', 'Cascadabile', 'A+++', 'Commerciale'], price: '€ 12.900', category: 'heaters' },
-];
-
-const commercialProducts: Product[] = [
-  { name: 'ECOi EX VRF 8HP', power: '22,4 kW', series: 'ECOi EX', stock: 5, brand: 'Panasonic', variant: 'outdoor', desc: 'Sistema VRF 3 tubi R32. Fino a 64 unità interne collegate. 41% meno refrigerante vs R410A.', features: ['VRF 3 tubi', 'R32', '64 UI max', 'A++', 'Autonomo', 'BMS'], image: ecoiVrfImg, category: 'commercial' },
-  { name: 'ECOi EX VRF 16HP', power: '45 kW', series: 'ECOi EX', stock: 3, brand: 'Panasonic', variant: 'outdoor', desc: 'Massima potenza per grandi edifici. Funzionamento simultaneo caldo/freddo.', features: ['VRF 3 tubi', 'R32', '128 UI max', 'A++', 'Heat Recovery', 'BMS'], image: ecoiVrfImg, category: 'commercial' },
-  { name: 'Cassette 600x600 12000 BTU', power: '3,5 kW', series: 'CS-3UBE', stock: 20, brand: 'Panasonic', variant: 'indoor', desc: 'Cassette compatta per controsoffitti standard. nanoe™ X, flusso a 360°.', features: ['Cassette 60x60', 'nanoe™ X', '360°', 'Inverter', 'R32', 'A++'], category: 'commercial' },
-  { name: 'Canalizzato Slim 18000 BTU', power: '5,0 kW', series: 'CS-SE', stock: 15, brand: 'Panasonic', variant: 'indoor', desc: 'Altezza solo 200mm. Ideale per installazione in spazi ridotti sopra controsoffitto.', features: ['Slim 200mm', 'Inverter', 'R32', 'A++', 'Silenzioso'], category: 'commercial' },
-];
+const fallback = <div className="py-12 text-center text-white/30 text-sm">Caricamento…</div>;
+const Lazy = ({ children }: { children: ReactNode }) => (
+  <Suspense fallback={fallback}>{children}</Suspense>
+);
 
 // ===== SVG COMPONENT =====
 function ProductSVG({ variant = 'indoor' }: { variant?: 'indoor' | 'outdoor' }) {
@@ -190,7 +108,7 @@ function ProductSVG({ variant = 'indoor' }: { variant?: 'indoor' | 'outdoor' }) 
 }
 
 // ===== MODAL =====
-function Modal({ isOpen, onClose, children }: { isOpen: boolean; onClose: () => void; children: React.ReactNode }) {
+function Modal({ isOpen, onClose, children }: { isOpen: boolean; onClose: () => void; children: ReactNode }) {
   useEffect(() => {
     document.body.style.overflow = isOpen ? 'hidden' : '';
     return () => { document.body.style.overflow = ''; };
@@ -862,7 +780,7 @@ function PrivatiSignupModal({ isOpen, onClose, showToast }: { isOpen: boolean; o
   const [err, setErr] = useState<string | null>(null);
   const set = (k: string, v: string) => setF(p => ({ ...p, [k]: v }));
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = (e: FormEvent) => {
     e.preventDefault();
     setErr(null);
     const r = register({
@@ -1061,18 +979,28 @@ export default function App() {
   
   // Se siamo nella route admin, mostra solo il management system
   if (isAdminRoute) {
-    if (!admin) {
-      return <ManagementLogin onLoginSuccess={() => window.location.hash = '#admin'} />;
-    }
-    return <ManagementDashboard />;
+    return (
+      <Suspense fallback={fallback}>
+        {!admin ? (
+          <Lazy><ManagementLogin onLoginSuccess={() => (window.location.hash = '#admin')} /></Lazy>
+        ) : (
+          <ManagementDashboard />
+        )}
+      </Suspense>
+    );
   }
 
   // Auth/dedicated account pages (Business & Individual signup, login, dashboard)
   if (['signup-business', 'signup-individual', 'login', 'dashboard'].includes(authPage)) {
-    if (authPage === 'signup-business') return <BusinessSignupPage />;
-    if (authPage === 'signup-individual') return <IndividualSignupPage />;
-    if (authPage === 'login') return <LoginPage />;
-    return <DashboardPage />;
+    const Page = (
+      { 'signup-business': BusinessSignupPage, 'signup-individual': IndividualSignupPage, login: LoginPage, dashboard: DashboardPage } as
+        Record<string, ComponentType>
+    )[authPage];
+    return (
+      <Suspense fallback={fallback}>
+        <Lazy><Page /></Lazy>
+      </Suspense>
+    );
   }
   
   // Phase 5: Performance & Monitoring Hooks
@@ -1094,7 +1022,7 @@ export default function App() {
   // Security Middleware Initialization
   useEffect(() => {
     securityMiddleware.initialize();
-    initializeTestAccounts();
+    initializeTestAccounts().then((m) => m.initializeTestAccounts());
     console.log('[SECURITY] Security middleware initialized');
     console.log('[TEST] Test accounts initialized');
   }, []);
@@ -1122,6 +1050,7 @@ export default function App() {
   };
 
   return (
+    <Suspense fallback={fallback}>
     <ErrorBoundary>
     <TranslationProvider>
     <LanguageProvider>
@@ -1153,55 +1082,55 @@ export default function App() {
         <InstallerMap />
         <AboutSection />
         <FAQSection />
-        <LegalPages />
+        <Lazy><LegalPages /></Lazy>
         <ContactSection showToast={showToast} />
         
         {/* Phase 2: Content & Engagement */}
-        <BlogSection />
-        <VideoSection />
-        <TestimonialsSection />
-        <GallerySection />
+        <Lazy><BlogSection /></Lazy>
+        <Lazy><VideoSection /></Lazy>
+        <Lazy><TestimonialsSection /></Lazy>
+        <Lazy><GallerySection /></Lazy>
         
         {/* Phase 4: E-commerce Avanzato */}
-        <WishlistSection />
-        <ReviewsSection />
-        <CouponSystem />
-        <OrderTrackingAdvanced />
-        <LoyaltyProgram />
+        <Lazy><WishlistSection /></Lazy>
+        <Lazy><ReviewsSection /></Lazy>
+        <Lazy><CouponSystem /></Lazy>
+        <Lazy><OrderTrackingAdvanced /></Lazy>
+        <Lazy><LoyaltyProgram /></Lazy>
         <ReferralSystem />
         
         {/* Phase 5: AR/VR Experience */}
-        <VirtualShowroom />
+        <Lazy><VirtualShowroom /></Lazy>
         
         {/* Phase 5: International Expansion */}
         <LanguageCurrencySelector />
         <InternationalShipping />
         
         {/* Phase 5: Third-Party Integrations */}
-        <ERPIntegration />
-        <AccountingIntegration />
-        <ShippingIntegration />
-        <AdvancedAnalytics />
-        <InventoryManagement />
-        <CustomerSupportIntegration />
+        <Lazy><ERPIntegration /></Lazy>
+        <Lazy><AccountingIntegration /></Lazy>
+        <Lazy><ShippingIntegration /></Lazy>
+        <Lazy><AdvancedAnalytics /></Lazy>
+        <Lazy><InventoryManagement /></Lazy>
+        <Lazy><CustomerSupportIntegration /></Lazy>
         
         {/* Phase 4: Marketing & Growth */}
-        <LeadMagnetSection />
-        <NewsletterSection />
+        <Lazy><LeadMagnetSection /></Lazy>
+        <Lazy><NewsletterSection /></Lazy>
         <GamificationWidget />
         
         {/* Phase 3: Backend & Commerce */}
         {user && <UserDashboard />}
         
         {/* Complete Product Catalog - 45 prodotti Panasonic + TCL */}
-        <CompleteProductCatalog />
+        <Lazy><CompleteProductCatalog /></Lazy>
         
         <Footer onNavigate={handleNavigate} />
       </main>
 
       {/* Phase 3: Commerce Components */}
-      <AuthModal isOpen={authModal} onClose={() => setAuthModal(false)} />
-      <CartSidebar isOpen={cartOpen} onClose={() => setCartOpen(false)} />
+      <Lazy><AuthModal isOpen={authModal} onClose={() => setAuthModal(false)} /></Lazy>
+      <Lazy><CartSidebar isOpen={cartOpen} onClose={() => setCartOpen(false)} /></Lazy>
       
       {/* Cart Button */}
       <button
@@ -1246,20 +1175,20 @@ export default function App() {
       <WhatsAppButton />
 
       {/* Phase 4: Marketing Components */}
-      <SmartPopupSystem />
-      <SocialSharing />
-      <EmailAutomationSystem />
-      <AnalyticsDashboard />
+      <Lazy><SmartPopupSystem /></Lazy>
+      <Lazy><SocialSharing /></Lazy>
+      <Lazy><EmailAutomationSystem /></Lazy>
+      <Lazy><AnalyticsDashboard /></Lazy>
       
       {/* Phase 5: UX Research & Monitoring */}
-      <NPSSurvey />
-      <FeedbackWidget />
-      <UsabilityTestRecorder />
-      <UptimeMonitor />
-      <ErrorLogViewer />
+      <Lazy><NPSSurvey /></Lazy>
+      <Lazy><FeedbackWidget /></Lazy>
+      <Lazy><UsabilityTestRecorder /></Lazy>
+      <Lazy><UptimeMonitor /></Lazy>
+      <Lazy><ErrorLogViewer /></Lazy>
  
       {/* Cookie Banner */}
-      <CookieBanner />
+      <Lazy><CookieBanner /></Lazy>
       {/* Signup Modals */}
       <PrivatiSignupModal isOpen={privatiSignup} onClose={() => setPrivatiSignup(false)} showToast={showToast} />
       <ProfessionistiSignupModal isOpen={professionistiSignup} onClose={() => setProfessionistiSignup(false)} showToast={showToast} />
@@ -1305,5 +1234,6 @@ export default function App() {
     </LanguageProvider>
     </TranslationProvider>
     </ErrorBoundary>
+    </Suspense>
   );
 }
