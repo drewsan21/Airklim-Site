@@ -1,0 +1,15 @@
+node_modules
+**/node_modules
+dist
+coverage
+**/coverage
+logs
+**/logs
+*.log
+.git
+.github
+.env
+.env.*
+npm-debug.log*
+.DS_Store
+Thumbs.db

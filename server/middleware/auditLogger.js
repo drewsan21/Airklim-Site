@@ -58,8 +58,24 @@ const createAuditTable = async () => {
   }
 };
 
-// Initialize table
-createAuditTable().catch(console.error);
+// Initialize table (retry a few times so the server can start before Postgres is ready,
+// e.g. in docker-compose where the backend may boot ahead of the DB)
+const initAuditTable = async (retries = 5, delayMs = 3000) => {
+  for (let i = 1; i <= retries; i++) {
+    try {
+      await createAuditTable();
+      console.log('[AUDIT] audit_logs table ready');
+      return;
+    } catch (err) {
+      if (i === retries) {
+        console.warn(`[AUDIT] Could not initialize audit_logs after ${retries} attempts: ${err.message}`);
+        return;
+      }
+      await new Promise((r) => setTimeout(r, delayMs));
+    }
+  }
+};
+initAuditTable();
 
 // Audit log middleware
 const auditLog = (options = {}) => {
