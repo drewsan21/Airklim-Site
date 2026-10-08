@@ -60,7 +60,7 @@ const UsabilityTestRecorder = lazy(() => import('./UXResearch').then(m => ({ def
 const ErrorBoundary = lazy(() => import('./ErrorTracking').then(m => ({ default: m.ErrorBoundary })));
 const UptimeMonitor = lazy(() => import('./ErrorTracking').then(m => ({ default: m.UptimeMonitor })));
 const ErrorLogViewer = lazy(() => import('./ErrorTracking').then(m => ({ default: m.ErrorLogViewer })));
-import { useErrorHandler, usePerformanceMonitoring } from './ErrorTracking';
+import { useErrorHandler, usePerformanceMonitoring } from './ErrorTrackingHooks';
 import { useServiceWorker, usePreloadResources, configureCDN } from './PerformanceAdvanced';
 const WishlistSection = lazy(() => import('./EcommerceAdvanced').then(m => ({ default: m.WishlistSection })));
 const ReviewsSection = lazy(() => import('./EcommerceAdvanced').then(m => ({ default: m.ReviewsSection })));
