@@ -18,6 +18,7 @@ import { VideoSection } from './VideoSection';
 import { TestimonialsSection } from './TestimonialsSection';
 import { GallerySection } from './GallerySection';
 import { AuthModal, CartSidebar, UserDashboard } from './Commerce';
+import { BusinessSignupPage, IndividualSignupPage, LoginPage, DashboardPage } from './AuthPages';
 import { useAuth, useCart } from './hooks';
 import { LeadMagnetSection, SmartPopupSystem, NewsletterSection, SocialSharing } from './Marketing';
 import { LanguageProvider, LanguageSwitcher } from './LanguageContext';
@@ -856,10 +857,24 @@ function ProfileChoiceSection({ onPrivatiSignup, onProfessionistiSignup }: { onP
 
 // ===== PRIVATI SIGNUP MODAL =====
 function PrivatiSignupModal({ isOpen, onClose, showToast }: { isOpen: boolean; onClose: () => void; showToast: (m: string) => void }) {
+  const { register } = useAuth();
+  const [f, setF] = useState({ name: '', surname: '', email: '', phone: '', address: '', city: '', zip: '', province: '', password: '' });
+  const [err, setErr] = useState<string | null>(null);
+  const set = (k: string, v: string) => setF(p => ({ ...p, [k]: v }));
+
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    showToast('Registrazione completata! Riceverai una email di conferma.');
-    onClose();
+    setErr(null);
+    const r = register({
+      email: f.email, password: f.password, name: f.name, surname: f.surname,
+      phone: f.phone || undefined, accountType: 'individual',
+      address: f.address || undefined, city: f.city || undefined, zip: f.zip || undefined, province: f.province || undefined,
+    });
+    if (r.success) {
+      showToast(r.message);
+      window.location.hash = 'dashboard';
+      onClose();
+    } else setErr(r.message);
   };
 
   return (
@@ -868,37 +883,44 @@ function PrivatiSignupModal({ isOpen, onClose, showToast }: { isOpen: boolean; o
         <button onClick={onClose} className="absolute top-4 right-4 w-8 h-8 rounded-full bg-white/10 hover:bg-white/20 flex items-center justify-center">
           <svg className="w-4 h-4 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" /></svg>
         </button>
-        
+
         <div className="mb-6">
           <div className="w-12 h-12 rounded-xl bg-sky-500/20 flex items-center justify-center mb-4">
             <svg className="w-6 h-6 text-sky-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6" />
             </svg>
           </div>
-          <h3 className="text-2xl font-bold text-white mb-2">Registrazione Privati</h3>
-          <p className="text-white/50 text-sm">Crea il tuo account per accedere ai prodotti residenziali e ricevere assistenza dedicata.</p>
+          <h3 className="text-2xl font-bold text-white mb-2">Registrazione Individual</h3>
+          <p className="text-white/50 text-sm">Crea il tuo account privato: all&apos;acquisto verrai collegato automaticamente al miglior installatore certificato della tua zona.</p>
         </div>
+
+        {err && <div className="mb-4 p-3 rounded-lg bg-red-500/10 border border-red-500/20 text-red-400 text-sm">{err}</div>}
 
         <form onSubmit={handleSubmit} className="space-y-4">
           <div className="grid grid-cols-2 gap-4">
-            <input type="text" required placeholder="Nome *" className="w-full px-4 py-3 rounded-xl bg-white/5 border border-white/10 text-white placeholder-white/30 focus:border-sky-500 outline-none" />
-            <input type="text" required placeholder="Cognome *" className="w-full px-4 py-3 rounded-xl bg-white/5 border border-white/10 text-white placeholder-white/30 focus:border-sky-500 outline-none" />
+            <input type="text" required placeholder="Nome *" value={f.name} onChange={e => set('name', e.target.value)} className="w-full px-4 py-3 rounded-xl bg-white/5 border border-white/10 text-white placeholder-white/30 focus:border-sky-500 outline-none" />
+            <input type="text" required placeholder="Cognome *" value={f.surname} onChange={e => set('surname', e.target.value)} className="w-full px-4 py-3 rounded-xl bg-white/5 border border-white/10 text-white placeholder-white/30 focus:border-sky-500 outline-none" />
           </div>
-          <input type="email" required placeholder="Email *" className="w-full px-4 py-3 rounded-xl bg-white/5 border border-white/10 text-white placeholder-white/30 focus:border-sky-500 outline-none" />
-          <input type="tel" required placeholder="Telefono *" className="w-full px-4 py-3 rounded-xl bg-white/5 border border-white/10 text-white placeholder-white/30 focus:border-sky-500 outline-none" />
-          <input type="text" placeholder="Indirizzo" className="w-full px-4 py-3 rounded-xl bg-white/5 border border-white/10 text-white placeholder-white/30 focus:border-sky-500 outline-none" />
+          <input type="email" required placeholder="Email *" value={f.email} onChange={e => set('email', e.target.value)} className="w-full px-4 py-3 rounded-xl bg-white/5 border border-white/10 text-white placeholder-white/30 focus:border-sky-500 outline-none" />
+          <input type="tel" required placeholder="Telefono *" value={f.phone} onChange={e => set('phone', e.target.value)} className="w-full px-4 py-3 rounded-xl bg-white/5 border border-white/10 text-white placeholder-white/30 focus:border-sky-500 outline-none" />
+          <input type="password" required placeholder="Password * (min 8 caratteri, 1 maiuscola, 1 numero)" value={f.password} onChange={e => set('password', e.target.value)} className="w-full px-4 py-3 rounded-xl bg-white/5 border border-white/10 text-white placeholder-white/30 focus:border-sky-500 outline-none" />
+          <input type="text" placeholder="Indirizzo" value={f.address} onChange={e => set('address', e.target.value)} className="w-full px-4 py-3 rounded-xl bg-white/5 border border-white/10 text-white placeholder-white/30 focus:border-sky-500 outline-none" />
           <div className="grid grid-cols-3 gap-4">
-            <input type="text" placeholder="Città" className="w-full px-4 py-3 rounded-xl bg-white/5 border border-white/10 text-white placeholder-white/30 focus:border-sky-500 outline-none" />
-            <input type="text" placeholder="CAP" className="w-full px-4 py-3 rounded-xl bg-white/5 border border-white/10 text-white placeholder-white/30 focus:border-sky-500 outline-none" />
-            <input type="text" placeholder="Provincia" className="w-full px-4 py-3 rounded-xl bg-white/5 border border-white/10 text-white placeholder-white/30 focus:border-sky-500 outline-none" />
+            <input type="text" placeholder="Città *" value={f.city} onChange={e => set('city', e.target.value)} className="w-full px-4 py-3 rounded-xl bg-white/5 border border-white/10 text-white placeholder-white/30 focus:border-sky-500 outline-none" />
+            <input type="text" placeholder="CAP" value={f.zip} onChange={e => set('zip', e.target.value)} className="w-full px-4 py-3 rounded-xl bg-white/5 border border-white/10 text-white placeholder-white/30 focus:border-sky-500 outline-none" />
+            <input type="text" placeholder="Prov." maxLength={2} value={f.province} onChange={e => set('province', e.target.value)} className="w-full px-4 py-3 rounded-xl bg-white/5 border border-white/10 text-white placeholder-white/30 focus:border-sky-500 outline-none" />
           </div>
           <div className="flex items-start gap-2 text-sm text-white/40">
             <input type="checkbox" required className="mt-1" />
             <span>Accetto i <a href="#" className="text-sky-400 hover:underline">Termini e Condizioni</a> e la <a href="#" className="text-sky-400 hover:underline">Privacy Policy</a></span>
           </div>
           <button type="submit" className="w-full px-6 py-3 bg-sky-500 hover:bg-sky-400 text-white rounded-xl font-semibold transition-all hover:shadow-lg hover:shadow-sky-500/25">
-            Crea Account
+            Crea Account Individual
           </button>
+          <p className="text-center text-xs text-white/40">
+            Preferisci la pagina completa? <a href="#/signup-individual" onClick={onClose} className="text-sky-400 hover:underline">Signup Individual →</a> ·
+            Sei un installatore? <a href="#/signup-business" onClick={onClose} className="text-amber-400 hover:underline">Account Business →</a>
+          </p>
         </form>
       </div>
     </Modal>
@@ -907,10 +929,27 @@ function PrivatiSignupModal({ isOpen, onClose, showToast }: { isOpen: boolean; o
 
 // ===== PROFESSIONISTI SIGNUP MODAL =====
 function ProfessionistiSignupModal({ isOpen, onClose, showToast }: { isOpen: boolean; onClose: () => void; showToast: (m: string) => void }) {
+  const { register } = useAuth();
+  const [f, setF] = useState({
+    company: '', vatNumber: '', fiscalCode: '', pec: '', reaNumber: '',
+    name: '', surname: '', email: '', phone: '', password: '', docs: 0,
+  });
+  const [err, setErr] = useState<string | null>(null);
+  const set = (k: string, v: any) => setF(p => ({ ...p, [k]: v }));
+
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    showToast('Richiesta inviata! Verificheremo i documenti e ti contatteremo entro 48 ore.');
-    onClose();
+    setErr(null);
+    const r = register({
+      email: f.email, password: f.password, name: f.name, surname: f.surname, phone: f.phone,
+      accountType: 'business',
+      business: { company: f.company, vatNumber: f.vatNumber, fiscalCode: f.fiscalCode || undefined, pec: f.pec || undefined, reaNumber: f.reaNumber || undefined, documentsUploaded: f.docs },
+    });
+    if (r.success) {
+      showToast(r.message);
+      window.location.hash = 'dashboard';
+      onClose();
+    } else setErr(r.message);
   };
 
   return (
@@ -919,99 +958,81 @@ function ProfessionistiSignupModal({ isOpen, onClose, showToast }: { isOpen: boo
         <button onClick={onClose} className="absolute top-4 right-4 w-8 h-8 rounded-full bg-white/10 hover:bg-white/20 flex items-center justify-center">
           <svg className="w-4 h-4 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" /></svg>
         </button>
-        
+
         <div className="mb-6">
           <div className="w-12 h-12 rounded-xl bg-amber-500/20 flex items-center justify-center mb-4">
             <svg className="w-6 h-6 text-amber-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 13.255A23.931 23.931 0 0112 15c-3.183 0-6.22-.62-9-1.745M16 6V4a2 2 0 00-2-2h-4a2 2 0 00-2 2v2m4 6h-.01M5 20h14a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
             </svg>
           </div>
-          <h3 className="text-2xl font-bold text-white mb-2">Registrazione Professionisti</h3>
-          <p className="text-white/50 text-sm">Compila il form e carica i documenti richiesti per accedere ai prezzi riservati e ai servizi professionali.</p>
+          <h3 className="text-2xl font-bold text-white mb-2">Registrazione Business</h3>
+          <p className="text-white/50 text-sm">Account per installatori HVAC: acquisto B2B da AIRKLIM come distributore e visibilità nella rete installatori per ricevere clienti dalla tua zona.</p>
         </div>
+
+        {err && <div className="mb-4 p-3 rounded-lg bg-red-500/10 border border-red-500/20 text-red-400 text-sm">{err}</div>}
 
         <form onSubmit={handleSubmit} className="space-y-4">
           {/* Dati Azienda */}
           <div className="space-y-3">
             <h4 className="text-sm font-semibold text-white/70 uppercase tracking-wider">Dati Aziendali</h4>
-            <input type="text" required placeholder="Ragione Sociale *" className="w-full px-4 py-3 rounded-xl bg-white/5 border border-white/10 text-white placeholder-white/30 focus:border-amber-500 outline-none" />
+            <input type="text" required placeholder="Ragione Sociale *" value={f.company} onChange={e => set('company', e.target.value)} className="w-full px-4 py-3 rounded-xl bg-white/5 border border-white/10 text-white placeholder-white/30 focus:border-amber-500 outline-none" />
             <div className="grid grid-cols-2 gap-4">
-              <input type="text" required placeholder="Partita IVA *" className="w-full px-4 py-3 rounded-xl bg-white/5 border border-white/10 text-white placeholder-white/30 focus:border-amber-500 outline-none" />
-              <input type="text" required placeholder="Codice Fiscale *" className="w-full px-4 py-3 rounded-xl bg-white/5 border border-white/10 text-white placeholder-white/30 focus:border-amber-500 outline-none" />
+              <input type="text" required placeholder="Partita IVA * (11 cifre)" value={f.vatNumber} onChange={e => set('vatNumber', e.target.value)} className="w-full px-4 py-3 rounded-xl bg-white/5 border border-white/10 text-white placeholder-white/30 focus:border-amber-500 outline-none" />
+              <input type="text" placeholder="Codice Fiscale" value={f.fiscalCode} onChange={e => set('fiscalCode', e.target.value)} className="w-full px-4 py-3 rounded-xl bg-white/5 border border-white/10 text-white placeholder-white/30 focus:border-amber-500 outline-none" />
             </div>
-            <input type="email" required placeholder="PEC (Posta Elettronica Certificata) *" className="w-full px-4 py-3 rounded-xl bg-white/5 border border-white/10 text-white placeholder-white/30 focus:border-amber-500 outline-none" />
-            <input type="text" placeholder="Numero REA" className="w-full px-4 py-3 rounded-xl bg-white/5 border border-white/10 text-white placeholder-white/30 focus:border-amber-500 outline-none" />
+            <div className="grid grid-cols-2 gap-4">
+              <input type="email" placeholder="PEC" value={f.pec} onChange={e => set('pec', e.target.value)} className="w-full px-4 py-3 rounded-xl bg-white/5 border border-white/10 text-white placeholder-white/30 focus:border-amber-500 outline-none" />
+              <input type="text" placeholder="Numero REA" value={f.reaNumber} onChange={e => set('reaNumber', e.target.value)} className="w-full px-4 py-3 rounded-xl bg-white/5 border border-white/10 text-white placeholder-white/30 focus:border-amber-500 outline-none" />
+            </div>
           </div>
 
           {/* Contatto */}
           <div className="space-y-3 pt-4 border-t border-white/5">
             <h4 className="text-sm font-semibold text-white/70 uppercase tracking-wider">Referente Aziendale</h4>
             <div className="grid grid-cols-2 gap-4">
-              <input type="text" required placeholder="Nome *" className="w-full px-4 py-3 rounded-xl bg-white/5 border border-white/10 text-white placeholder-white/30 focus:border-amber-500 outline-none" />
-              <input type="text" required placeholder="Cognome *" className="w-full px-4 py-3 rounded-xl bg-white/5 border border-white/10 text-white placeholder-white/30 focus:border-amber-500 outline-none" />
+              <input type="text" required placeholder="Nome *" value={f.name} onChange={e => set('name', e.target.value)} className="w-full px-4 py-3 rounded-xl bg-white/5 border border-white/10 text-white placeholder-white/30 focus:border-amber-500 outline-none" />
+              <input type="text" required placeholder="Cognome *" value={f.surname} onChange={e => set('surname', e.target.value)} className="w-full px-4 py-3 rounded-xl bg-white/5 border border-white/10 text-white placeholder-white/30 focus:border-amber-500 outline-none" />
             </div>
-            <input type="email" required placeholder="Email aziendale *" className="w-full px-4 py-3 rounded-xl bg-white/5 border border-white/10 text-white placeholder-white/30 focus:border-amber-500 outline-none" />
-            <input type="tel" required placeholder="Telefono *" className="w-full px-4 py-3 rounded-xl bg-white/5 border border-white/10 text-white placeholder-white/30 focus:border-amber-500 outline-none" />
+            <input type="email" required placeholder="Email aziendale *" value={f.email} onChange={e => set('email', e.target.value)} className="w-full px-4 py-3 rounded-xl bg-white/5 border border-white/10 text-white placeholder-white/30 focus:border-amber-500 outline-none" />
+            <input type="tel" required placeholder="Telefono *" value={f.phone} onChange={e => set('phone', e.target.value)} className="w-full px-4 py-3 rounded-xl bg-white/5 border border-white/10 text-white placeholder-white/30 focus:border-amber-500 outline-none" />
+            <input type="password" required placeholder="Password * (min 8 caratteri, 1 maiuscola, 1 numero)" value={f.password} onChange={e => set('password', e.target.value)} className="w-full px-4 py-3 rounded-xl bg-white/5 border border-white/10 text-white placeholder-white/30 focus:border-amber-500 outline-none" />
           </div>
 
           {/* Documenti */}
           <div className="space-y-3 pt-4 border-t border-white/5">
             <h4 className="text-sm font-semibold text-white/70 uppercase tracking-wider">Documenti Richiesti</h4>
             <div className="p-4 rounded-xl bg-amber-500/5 border border-amber-500/20">
-              <p className="text-xs text-amber-400 mb-2">📋 Documenti obbligatori per la registrazione:</p>
+              <p className="text-xs text-amber-400 mb-2">ð Documenti per la verifica (entro 48h):</p>
               <ul className="text-xs text-white/50 space-y-1">
                 <li>• Visura Camerale (non anteriore a 6 mesi)</li>
-                <li>• Certificato di abilitazione DM 37/08 (lettera d)</li>
+                <li>• Certificato di abilitazione DM 37/08</li>
                 <li>• DURC (Documento Unico Regolarità Contributiva)</li>
               </ul>
             </div>
-            
-            <div>
-              <label className="block text-sm text-white/60 mb-2">Visura Camerale *</label>
-              <input type="file" required accept=".pdf,.jpg,.png" className="w-full px-4 py-3 rounded-xl bg-white/5 border border-white/10 text-white file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:text-sm file:font-semibold file:bg-amber-500/20 file:text-amber-400 hover:file:bg-amber-500/30" />
-            </div>
-            
-            <div>
-              <label className="block text-sm text-white/60 mb-2">Certificato DM 37/08 *</label>
-              <input type="file" required accept=".pdf,.jpg,.png" className="w-full px-4 py-3 rounded-xl bg-white/5 border border-white/10 text-white file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:text-sm file:font-semibold file:bg-amber-500/20 file:text-amber-400 hover:file:bg-amber-500/30" />
-            </div>
-            
-            <div>
-              <label className="block text-sm text-white/60 mb-2">DURC *</label>
-              <input type="file" required accept=".pdf,.jpg,.png" className="w-full px-4 py-3 rounded-xl bg-white/5 border border-white/10 text-white file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:text-sm file:font-semibold file:bg-amber-500/20 file:text-amber-400 hover:file:bg-amber-500/30" />
-            </div>
-            
-            <div>
-              <label className="block text-sm text-white/60 mb-2">Certificato ISO 9001 (opzionale)</label>
-              <input type="file" accept=".pdf,.jpg,.png" className="w-full px-4 py-3 rounded-xl bg-white/5 border border-white/10 text-white file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:text-sm file:font-semibold file:bg-white/10 file:text-white/60 hover:file:bg-white/20" />
-            </div>
-          </div>
-
-          {/* Sede */}
-          <div className="space-y-3 pt-4 border-t border-white/5">
-            <h4 className="text-sm font-semibold text-white/70 uppercase tracking-wider">Sede Legale</h4>
-            <input type="text" required placeholder="Indirizzo *" className="w-full px-4 py-3 rounded-xl bg-white/5 border border-white/10 text-white placeholder-white/30 focus:border-amber-500 outline-none" />
-            <div className="grid grid-cols-3 gap-4">
-              <input type="text" required placeholder="Città *" className="w-full px-4 py-3 rounded-xl bg-white/5 border border-white/10 text-white placeholder-white/30 focus:border-amber-500 outline-none" />
-              <input type="text" required placeholder="CAP *" className="w-full px-4 py-3 rounded-xl bg-white/5 border border-white/10 text-white placeholder-white/30 focus:border-amber-500 outline-none" />
-              <input type="text" required placeholder="Provincia *" className="w-full px-4 py-3 rounded-xl bg-white/5 border border-white/10 text-white placeholder-white/30 focus:border-amber-500 outline-none" />
-            </div>
+            <select value={f.docs} onChange={e => set('docs', Number(e.target.value))} className="w-full px-4 py-3 rounded-xl bg-white/5 border border-white/10 text-white focus:border-amber-500 outline-none">
+              <option value={0} className="bg-slate-900">Caricherò i documenti in dashboard (verifica entro 48h)</option>
+              <option value={1} className="bg-slate-900">1 documento pronto</option>
+              <option value={2} className="bg-slate-900">2+ documenti pronti → verifica immediata</option>
+            </select>
           </div>
 
           <div className="flex items-start gap-2 text-sm text-white/40 pt-4">
             <input type="checkbox" required className="mt-1" />
             <span>Accetto i <a href="#" className="text-amber-400 hover:underline">Termini e Condizioni</a>, la <a href="#" className="text-amber-400 hover:underline">Privacy Policy</a> e autorizzo il trattamento dei dati ai sensi del GDPR</span>
           </div>
-          
-          <button type="submit" className="w-full px-6 py-3 bg-amber-500 hover:bg-amber-400 text-white rounded-xl font-semibold transition-all hover:shadow-lg hover:shadow-amber-500/25">
-            Invia Richiesta di Registrazione
+
+          <button type="submit" className="w-full px-6 py-3 bg-amber-500 hover:bg-amber-400 text-black rounded-xl font-semibold transition-all hover:shadow-lg hover:shadow-amber-500/25">
+            Crea Account Business
           </button>
+          <p className="text-center text-xs text-white/40 pb-2">
+            Preferisci la pagina completa? <a href="#/signup-business" onClick={onClose} className="text-amber-400 hover:underline">Signup Business →</a> ·
+            Hai già un account? <a href="#/login" onClick={onClose} className="text-sky-400 hover:underline">Accedi</a>
+          </p>
         </form>
       </div>
     </Modal>
   );
 }
-
 // ===== MAIN APP =====
 export default function App() {
   const [selectedProduct, setSelectedProduct] = useState<Product | null>(null);
@@ -1025,11 +1046,13 @@ export default function App() {
   const { itemCount } = useCart();
   const { admin } = useAdminAuth();
   const [isAdminRoute, setIsAdminRoute] = useState(window.location.hash === '#admin');
+  const [authPage, setAuthPage] = useState<string>(window.location.hash.replace(/^#\/?/, ''));
   
   // Admin routing
   useEffect(() => {
     const handleHashChange = () => {
       setIsAdminRoute(window.location.hash === '#admin');
+      setAuthPage(window.location.hash.replace(/^#\/?/, ''));
     };
     
     window.addEventListener('hashchange', handleHashChange);
@@ -1042,6 +1065,14 @@ export default function App() {
       return <ManagementLogin onLoginSuccess={() => window.location.hash = '#admin'} />;
     }
     return <ManagementDashboard />;
+  }
+
+  // Auth/dedicated account pages (Business & Individual signup, login, dashboard)
+  if (['signup-business', 'signup-individual', 'login', 'dashboard'].includes(authPage)) {
+    if (authPage === 'signup-business') return <BusinessSignupPage />;
+    if (authPage === 'signup-individual') return <IndividualSignupPage />;
+    if (authPage === 'login') return <LoginPage />;
+    return <DashboardPage />;
   }
   
   // Phase 5: Performance & Monitoring Hooks

@@ -1,10 +1,19 @@
 import { useState } from 'react';
 import { getAllProducts, getProductsByCategory, getProductsByBrand, getProductStats } from './data/completeProducts2026';
+import { useCart } from './hooks';
 
 // ===== COMPLETE PRODUCT CATALOG SECTION =====
 export function CompleteProductCatalog() {
   const [activeFilter, setActiveFilter] = useState<'all' | 'residential' | 'commercial' | 'tcl'>('all');
   const [selectedCategory, setSelectedCategory] = useState<string>('all');
+  const { addItem } = useCart();
+  const [justAdded, setJustAdded] = useState<string | null>(null);
+
+  const handleAddToCart = (product: any) => {
+    addItem({ productId: product.id, name: product.name, brand: product.brand, price: product.price, image: product.image });
+    setJustAdded(product.id);
+    setTimeout(() => setJustAdded(null), 1500);
+  };
   
   const allProducts = getAllProducts();
   const stats = getProductStats();
@@ -222,6 +231,21 @@ export function CompleteProductCatalog() {
                     <div className="text-xs text-white/40">{product.model}</div>
                   </div>
                 </div>
+
+                {/* Aggiungi al carrello */}
+                <button
+                  onClick={() => handleAddToCart(product)}
+                  className={`mt-4 w-full py-3 rounded-xl font-semibold transition-all ${
+                    justAdded === product.id
+                      ? 'bg-green-500 text-white'
+                      : 'bg-sky-500 hover:bg-sky-400 text-white hover:shadow-lg hover:shadow-sky-500/25'
+                  }`}
+                >
+                  {justAdded === product.id ? '✓ Aggiunto al carrello!' : '🛒 Aggiungi al carrello'}
+                </button>
+                <p className="text-[11px] text-white/30 mt-2 text-center">
+                  Clienti privati: installatore certificato collegato automaticamente in base alla tua zona.
+                </p>
               </div>
             </div>
           ))}
