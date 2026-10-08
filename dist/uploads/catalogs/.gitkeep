@@ -1,0 +1,10 @@
+# Questa directory contiene i cataloghi PDF caricati dall'utente
+# I PDF vengono organizzati automaticamente in sottodirectory:
+# - panasonic/ (cataloghi Panasonic organizzati per anno)
+# - tcl/ (cataloghi TCL organizzati per anno)
+# - uploaded/ (PDF caricati via web)
+
+# I file PDF non vengono committati nel repository per motivi di:
+# - Dimensione file (limite GitHub 100MB per file)
+# - Copyright (i cataloghi sono protetti da copyright)
+# - Aggiornamenti frequenti (i cataloghi cambiano ogni anno)

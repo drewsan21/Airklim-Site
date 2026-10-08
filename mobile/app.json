@@ -1,0 +1,14 @@
+{
+  "expo": {
+    "name": "AIRKLIM",
+    "slug": "airklim-mobile",
+    "version": "1.0.0",
+    "orientation": "portrait",
+    "userInterfaceStyle": "light",
+    "newArchEnabled": true,
+    "splash": { "resizeMode": "contain", "backgroundColor": "#0ea5e9" },
+    "ios": { "supportsTablet": false, "bundleIdentifier": "com.airklim.mobile" },
+    "android": { "package": "com.airklim.mobile", "adaptiveIcon": { "backgroundColor": "#0ea5e9" } },
+    "extra": { "apiUrl": "http://localhost:3000" }
+  }
+}
