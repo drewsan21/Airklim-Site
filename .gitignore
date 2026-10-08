@@ -1,20 +1,10 @@
-# Coverage reports
-coverage/
-lcov-report/
-clover.xml
-lcov.info
+# Dependencies
+node_modules/
 
-# Node.js dependencies and lock files (optional, but package-lock is often committed; if generated artifacts are the concern, usually just node_modules. However, based on rules, we look for build/temp patterns. package-lock.json is a source of truth file, not typically ignored unless specified. The prompt says "Dependency directories". It does not say ignore package-lock.json by default. But `server/coverage` is clearly a generated report directory.)
+# Build outputs
+dist/
 
-# Let's re-evaluate based on strict rules:
-# 1. Compiled/Binary: None obvious except maybe inside coverage? No, those are html/js/css.
-# 2. Dependency dirs: None listed in added files (node_modules not present).
-# 3. Editor/IDE: None.
-# 4. System/Env: None.
-# 5. Other common ignores: `coverage/`, `htmlcov/`. The files are under `server/coverage/`. This matches the pattern for test coverage output which is generally ignored.
-# 6. Source files: `package-lock.json`, `crud.js`, `emailService.js`, `jest.setup.js`, `server.js` are all source/config files that should be tracked. Do NOT ignore them.
-# 7. Images: `favicon.png`, `sort-arrow-sprite.png` are part of the coverage report HTML structure. Since they are inside `coverage/`, ignoring the directory covers them. We do not add explicit image extensions to .gitignore globally.
-
-# Conclusion: Only the coverage directory needs to be ignored.
-
-coverage/
+# Logs & OS
+*.log
+.DS_Store
+Thumbs.db
