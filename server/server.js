@@ -18,18 +18,20 @@ const winston = require('winston');
 
 // Import routes
 const authRoutes = require('./routes/auth');
-const userRoutes = require('./routes/users');
-const orderRoutes = require('./routes/orders');
-const productRoutes = require('./routes/products');
-const analyticsRoutes = require('./routes/analytics');
-const backupRoutes = require('./routes/backups');
-const settingsRoutes = require('./routes/settings');
-const auditRoutes = require('./routes/audit');
+const {
+  usersRouter: userRoutes,
+  productsRouter: productRoutes,
+  ordersRouter: orderRoutes,
+  analyticsRouter: analyticsRoutes,
+  backupsRouter: backupRoutes,
+  settingsRouter: settingsRoutes,
+  auditRouter: auditRoutes
+} = require('./routes/crud');
 const analyzeRoutes = require('./routes/analyze');
 
 // Import middleware
 const { errorHandler } = require('./middleware/errorHandler');
-const { auditLogger } = require('./middleware/auditLogger');
+const { auditLog } = require('./middleware/auditLogger');
 const { securityMonitor } = require('./middleware/securityMonitor');
 
 // Initialize Express app
@@ -127,8 +129,8 @@ app.use(hpp());
 // 8. Security monitoring
 app.use(securityMonitor);
 
-// 9. Audit logging
-app.use(auditLogger);
+// 9. Audit logging (auditLog è un factory: va invocato per ottenere il middleware)
+app.use(auditLog());
 
 // ===== ROUTES =====
 app.use('/api/auth', authRoutes);
@@ -163,6 +165,8 @@ app.use((req, res) => {
 app.use(errorHandler);
 
 // ===== START SERVER =====
+// In test (Jest) il server non viene messo in ascolto: supertest lo usa direttamente
+if (process.env.NODE_ENV !== 'test' && !module.parent && require.main === module) {
 app.listen(PORT, () => {
   console.log(`
 ╔═══════════════════════════════════════════════════════════╗
@@ -180,5 +184,6 @@ app.listen(PORT, () => {
 ╚═══════════════════════════════════════════════════════════╝
   `);
 });
+}
 
 module.exports = app;
