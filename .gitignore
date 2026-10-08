@@ -1,11 +1,2 @@
-# Dependencies
-node_modules/
-
-# Build outputs
-dist/
-
-# Logs & OS
+# Logs and temp files
 *.log
-.DS_Store
-Thumbs.db
-server/coverage/

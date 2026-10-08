@@ -13,8 +13,6 @@ services:
       - "5432:5432"
     volumes:
       - postgres_data:/var/lib/postgresql/data
-      - ./server/database/schema.sql:/docker-entrypoint-initdb.d/01-schema.sql
-      - ./server/database/seed.js:/docker-entrypoint-initdb.d/02-seed.js
     networks:
       - airklim-network
     healthcheck:
@@ -51,21 +49,34 @@ services:
       timeout: 10s
       retries: 3
 
-  # Frontend (Vite)
+  # Frontend (nginx serving the built Vite bundle)
   frontend:
     build:
       context: .
       dockerfile: Dockerfile.frontend
     container_name: airklim-frontend
-    environment:
-      VITE_API_URL: http://localhost:3000/api
     ports:
-      - "5173:5173"
-    volumes:
-      - .:/app
-      - /app/node_modules
+      - "8081:80"
     depends_on:
       - backend
+    networks:
+      - airklim-network
+
+  # Database seeder (Node script — runs once and exits).
+  # Creates the schema (config/database.js initializeSchema) and test data.
+  seeder:
+    image: node:18-alpine
+    container_name: airklim-seeder
+    working_dir: /app
+    command: sh -c "npm ci --omit=dev && node database/seed.js"
+    environment:
+      DATABASE_URL: postgresql://postgres:postgres@postgres:5432/airklim
+    volumes:
+      - ./server:/app
+      - seeder_node_modules:/app/node_modules
+    depends_on:
+      postgres:
+        condition: service_healthy
     networks:
       - airklim-network
 
@@ -109,6 +120,7 @@ services:
 volumes:
   postgres_data:
   redis_data:
+  seeder_node_modules:
 
 networks:
   airklim-network:

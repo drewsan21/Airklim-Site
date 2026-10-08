@@ -45,10 +45,27 @@ jobs:
         cd server
         npm run lint
     
-    - name: Run tests
+    - name: Seed test database
+      run: |
+        cd server
+        node database/seed.js
+      env:
+        DATABASE_URL: postgresql://postgres:postgres@localhost:5432/airklim_test
+        JWT_SECRET: test_secret_key
+        NODE_ENV: test
+
+    - name: Run unit tests (with coverage)
       run: |
         cd server
         npm test
+      env:
+        JWT_SECRET: test_secret_key
+        NODE_ENV: test
+
+    - name: Run integration tests against Postgres
+      run: |
+        cd server
+        npx jest --selectProjects integration
       env:
         DATABASE_URL: postgresql://postgres:postgres@localhost:5432/airklim_test
         JWT_SECRET: test_secret_key
@@ -61,8 +78,26 @@ jobs:
         flags: unittests
         name: codecov-umbrella
 
+  frontend:
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v3
+
+    - name: Setup Node.js
+      uses: actions/setup-node@v3
+      with:
+        node-version: '18'
+        cache: 'npm'
+
+    - name: Install dependencies
+      run: npm ci
+
+    - name: Type-check and build
+      run: npm run build
+
   build:
-    needs: test
+    needs: [test, frontend]
     runs-on: ubuntu-latest
     if: github.ref == 'refs/heads/main'
     

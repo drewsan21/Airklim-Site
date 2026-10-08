@@ -16,5 +16,22 @@ if (!process.env.JWT_SECRET) {
 // Silenzia il warning ECONNREFUSED del pool di auditLogger quando il DB non è
 // disponibile (es. CI senza database): il pool emette un errore 'error' non gestito.
 const { Pool } = require('pg');
-const originalConstructor = Pool;
 global.__JEST_NO_DB__ = !process.env.DATABASE_URL;
+
+if (global.__JEST_NO_DB__) {
+  // Sostituisce il costruttore di pg.Pool in modo che ogni query fallisca
+  // silenziosamente invece di propagare un ECONNREFUSED non gestito.
+  class NoopPool extends Pool {
+    constructor(cfg) {
+      super(cfg);
+      this.on('error', () => {});
+    }
+    async query() {
+      throw new Error('No database available in unit test environment');
+    }
+    async connect() {
+      throw new Error('No database available in unit test environment');
+    }
+  }
+  require('pg').Pool = NoopPool;
+}

@@ -1,19 +1,17 @@
 # Multi-stage build for AIRKLIM Backend
 FROM node:18-alpine AS builder
 
-# Set working directory
 WORKDIR /app
 
-# Copy package files
+# Install ALL dependencies (dev deps are needed to run the test suite)
 COPY package*.json ./
+RUN npm ci
 
-# Install dependencies
-RUN npm ci --only=production
-
-# Copy source code
+# Copy source code and run the unit test suite as a build gate
 COPY . .
+RUN npm test
 
-# Production stage
+# Production image
 FROM node:18-alpine
 
 # Set working directory
@@ -23,17 +21,15 @@ WORKDIR /app
 RUN addgroup -g 1001 -S nodejs && \
     adduser -S nodejs -u 1001
 
-# Copy built assets from builder
-COPY --from=builder --chown=nodejs:nodejs /app/node_modules ./node_modules
-COPY --from=builder --chown=nodejs:nodejs /app/*.js ./
-COPY --from=builder --chown=nodejs:nodejs /app/routes ./routes
-COPY --from=builder --chown=nodejs:nodejs /app/middleware ./middleware
-COPY --from=builder --chown=nodejs:nodejs /app/config ./config
-COPY --from=builder --chown=nodejs:nodejs /app/services ./services
-COPY --from=builder --chown=nodejs:nodejs /app/utils ./utils
+# Install production dependencies only
+COPY package*.json ./
+RUN npm ci --omit=dev && npm cache clean --force
+
+# Copy application source (excluding node_modules via .dockerignore)
+COPY --chown=nodejs:nodejs . .
 
 # Create logs directory
-RUN mkdir -p logs && chown -R nodejs:nodejs logs
+RUN mkdir -p logs uploads && chown -R nodejs:nodejs /app
 
 # Switch to non-root user
 USER nodejs
