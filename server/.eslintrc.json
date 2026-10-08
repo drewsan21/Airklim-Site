@@ -1,21 +1,18 @@
 {
-  "root": true,
   "env": {
     "node": true,
-    "es2022": true,
+    "es2021": true,
     "jest": true
   },
+  "extends": "eslint:recommended",
   "parserOptions": {
-    "ecmaVersion": 2022,
-    "sourceType": "script"
+    "ecmaVersion": "latest",
+    "sourceType": "module"
   },
-  "extends": ["eslint:recommended"],
   "rules": {
-    "no-unused-vars": [
-      "error",
-      { "args": "none", "varsIgnorePattern": "^_", "ignoreRestSiblings": true }
-    ],
-    "no-empty": ["error", { "allowEmptyCatch": true }],
-    "no-console": "off"
+    "indent": ["error", 2],
+    "linebreak-style": ["error", "unix"],
+    "quotes": ["error", "single"],
+    "semi": ["error", "always"]
   }
 }
