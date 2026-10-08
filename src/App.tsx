@@ -11,6 +11,18 @@ import {
   OrderTracking,
   InstallerMap
 } from './Features';
+import { CookieBanner } from './CookieBanner';
+import { LegalPages } from './LegalPages';
+import { BlogSection } from './Blog';
+import { VideoSection } from './VideoSection';
+import { TestimonialsSection } from './TestimonialsSection';
+import { GallerySection } from './GallerySection';
+import { AuthModal, CartSidebar, UserDashboard } from './Commerce';
+import { IndividualSignupPage, BusinessSignupPage, LoginPage } from './AuthPages';
+import { BusinessDashboard } from './BusinessDashboard';
+import { IndividualDashboard } from './IndividualDashboard';
+import { ComfortAdvisor, EnergyBillEstimator, MaintenanceReminderSection, PartnerGallery } from './NewFeatures';
+import { useStore, currentUser, signout, seedDemoAccounts, StoredUser } from './store';
 import { useAuth, useCart } from './hooks';
 import { LanguageProvider, LanguageSwitcher } from './LanguageContext';
 import { useWebVitals, preloadCriticalResources } from './Performance';
@@ -172,6 +184,9 @@ function Sidebar({ onPrivatiSignup, onProfessionistiSignup }: { onPrivatiSignup:
     { id: 'guide', label: 'Guide', icon: '🎓' },
     { id: 'tracking', label: 'Tracking', icon: '📦' },
     { id: 'installatori', label: 'Installatori', icon: '🗺️' },
+    { id: 'galleria-installatori', label: 'Gallery Partner', icon: '📸' },
+    { id: 'bolletta', label: 'Stima Bolletta', icon: '💶' },
+    { id: 'tagliando', label: 'Tagliando Filtri', icon: '♻️' },
     { id: 'chi-siamo', label: 'Chi Siamo', icon: '👥' },
     { id: 'faq', label: 'FAQ', icon: '❓' },
     { id: 'contatti', label: 'Contatti', icon: '📞' },
@@ -216,6 +231,10 @@ function Sidebar({ onPrivatiSignup, onProfessionistiSignup }: { onPrivatiSignup:
       <div className="p-4 border-t border-white/5 space-y-2">
         <button onClick={onPrivatiSignup} className="block w-full px-4 py-2.5 bg-sky-500 hover:bg-sky-400 text-white rounded-xl font-semibold text-center transition-all hover:shadow-lg hover:shadow-sky-500/25 text-sm">🏠 Area Privati</button>
         <button onClick={onProfessionistiSignup} className="block w-full px-4 py-2.5 bg-amber-500 hover:bg-amber-400 text-white rounded-xl font-semibold text-center transition-all hover:shadow-lg hover:shadow-amber-500/25 text-sm">🏢 Area Professionisti</button>
+        <div className="grid grid-cols-2 gap-2 pt-1">
+          <a href="#account" className="px-2 py-2 rounded-lg bg-white/5 hover:bg-white/10 text-white/70 text-center text-xs font-medium border border-white/10">👤 Accedi<br/>Individual</a>
+          <a href="#business" className="px-2 py-2 rounded-lg bg-white/5 hover:bg-white/10 text-white/70 text-center text-xs font-medium border border-white/10">🏢 Accedi<br/>Business</a>
+        </div>
       </div>
     </aside>
   );
@@ -242,6 +261,9 @@ function MobileMenu({ onPrivatiSignup, onProfessionistiSignup }: { onPrivatiSign
     { id: 'guide', label: 'Guide', icon: '🎓' },
     { id: 'tracking', label: 'Tracking', icon: '📦' },
     { id: 'installatori', label: 'Installatori', icon: '🗺️' },
+    { id: 'galleria-installatori', label: 'Gallery Partner', icon: '📸' },
+    { id: 'bolletta', label: 'Stima Bolletta', icon: '💶' },
+    { id: 'tagliando', label: 'Tagliando Filtri', icon: '♻️' },
     { id: 'chi-siamo', label: 'Chi Siamo', icon: '👥' },
     { id: 'faq', label: 'FAQ', icon: '❓' },
     { id: 'contatti', label: 'Contatti', icon: '📞' },
@@ -737,7 +759,7 @@ function ProfileChoiceSection({ onPrivatiSignup, onProfessionistiSignup }: { onP
                 <li className="flex items-center gap-2"><span className="text-sky-400">✓</span> Assistenza tecnica</li>
                 <li className="flex items-center gap-2"><span className="text-sky-400">✓</span> Prezzi al pubblico</li>
               </ul>
-              <button onClick={onPrivatiSignup} className="w-full px-6 py-3 bg-sky-500 hover:bg-sky-400 text-white rounded-xl font-semibold transition-all hover:shadow-lg hover:shadow-sky-500/25">
+              <button onClick={() => { window.location.hash = '#signup-individual'; }} className="w-full px-6 py-3 bg-sky-500 hover:bg-sky-400 text-white rounded-xl font-semibold transition-all hover:shadow-lg hover:shadow-sky-500/25">
                 Registrati come Privato
               </button>
             </div>
@@ -762,7 +784,7 @@ function ProfileChoiceSection({ onPrivatiSignup, onProfessionistiSignup }: { onP
                 <li className="flex items-center gap-2"><span className="text-amber-400">✓</span> Sistemi VRF e commerciali</li>
                 <li className="flex items-center gap-2"><span className="text-amber-400">✓</span> Formazione certificata</li>
               </ul>
-              <button onClick={onProfessionistiSignup} className="w-full px-6 py-3 bg-amber-500 hover:bg-amber-400 text-white rounded-xl font-semibold transition-all hover:shadow-lg hover:shadow-amber-500/25">
+              <button onClick={() => { window.location.hash = '#signup-business'; }} className="w-full px-6 py-3 bg-amber-500 hover:bg-amber-400 text-white rounded-xl font-semibold transition-all hover:shadow-lg hover:shadow-amber-500/25">
                 Registrati come Professionista
               </button>
             </div>
@@ -964,19 +986,21 @@ export default function App() {
   const { itemCount } = useCart();
   const { admin } = useAdminAuth();
   const [isAdminRoute, setIsAdminRoute] = useState(window.location.hash === '#admin');
-  const [authPage, setAuthPage] = useState<string>(window.location.hash.replace(/^#\/?/, ''));
-  
-  // Admin routing
+  // Hash routing per le aree clienti (Windows-friendly, nessuna rewrite server richiesta)
+  const [route, setRoute] = useState(window.location.hash);
+  const sessionUser = useStore(s => s.users.find(u => u.id === s.session?.userId) ?? null);
+
+  // Admin & customer-area routing
   useEffect(() => {
+    seedDemoAccounts(); // account demo Individual / Business / Installer
     const handleHashChange = () => {
       setIsAdminRoute(window.location.hash === '#admin');
-      setAuthPage(window.location.hash.replace(/^#\/?/, ''));
+      setRoute(window.location.hash);
     };
-    
     window.addEventListener('hashchange', handleHashChange);
     return () => window.removeEventListener('hashchange', handleHashChange);
   }, []);
-  
+
   // Se siamo nella route admin, mostra solo il management system
   if (isAdminRoute) {
     return (
@@ -1002,6 +1026,20 @@ export default function App() {
       </Suspense>
     );
   }
+
+  // ===== AREE RISERVATE BUSINESS / INDIVIDUAL =====
+  if (route === '#business' || route === '#account') {
+    if (!sessionUser) return <LoginPage defaultTab={route === '#business' ? 'business' : 'individual'} onSwitchTab={() => {}} onBackHome={() => { window.location.hash = ''; }} onRegistered={() => { window.location.hash = route === '#business' ? '#signup-business' : '#signup-individual'; }} />;
+    if (route === '#business' && sessionUser.accountType !== 'business') { window.location.hash = '#account'; return null; }
+    if (route === '#account' && sessionUser.accountType !== 'individual') { window.location.hash = '#business'; return null; }
+    return sessionUser.accountType === 'business'
+      ? <BusinessDashboard user={sessionUser} />
+      : <IndividualDashboard user={sessionUser} />;
+  }
+  if (route === '#signup-business') return <BusinessSignupPage onSuccess={() => { window.location.hash = '#business'; }} onSwitchToLogin={() => { window.location.hash = '#login-business'; }} onSwitchToIndividual={() => { window.location.hash = '#signup-individual'; }} />;
+  if (route === '#signup-individual') return <IndividualSignupPage onSuccess={() => { window.location.hash = '#account'; }} onSwitchToLogin={() => { window.location.hash = '#login-account'; }} onSwitchToBusiness={() => { window.location.hash = '#signup-business'; }} />;
+  if (route === '#login-business') return <LoginPage defaultTab="business" onSwitchTab={() => {}} onBackHome={() => { window.location.hash = ''; }} onRegistered={() => { window.location.hash = '#signup-business'; }} />;
+  if (route === '#login-account') return <LoginPage defaultTab="individual" onSwitchTab={() => {}} onBackHome={() => { window.location.hash = ''; }} onRegistered={() => { window.location.hash = '#signup-individual'; }} />;
   
   // Phase 5: Performance & Monitoring Hooks
   useErrorHandler();
@@ -1031,6 +1069,13 @@ export default function App() {
     setToast({ message, visible: true });
     setTimeout(() => setToast(p => ({ ...p, visible: false })), 4000);
   }, []);
+
+  // Toast globale: qualsiasi componente può lanciare window.dispatchEvent(new CustomEvent('airklim-toast',{detail:'msg'}))
+  useEffect(() => {
+    const h = (e: Event) => showToast(((e as CustomEvent).detail as string) || '');
+    window.addEventListener('airklim-toast', h);
+    return () => window.removeEventListener('airklim-toast', h);
+  }, [showToast]);
 
   const scrollToSection = useCallback((id: string) => {
     document.getElementById(id)?.scrollIntoView({ behavior: 'smooth' });
@@ -1119,6 +1164,11 @@ export default function App() {
         <Lazy><NewsletterSection /></Lazy>
         <GamificationWidget />
         
+        {/* Phase 6: Nuove funzionalità — Energy Bill Estimator, Tagliando filtri, Gallery partner */}
+        <EnergyBillEstimator />
+        <MaintenanceReminderSection />
+        <PartnerGallery />
+
         {/* Phase 3: Backend & Commerce */}
         {user && <UserDashboard />}
         
@@ -1150,7 +1200,10 @@ export default function App() {
       
       {/* User/Auth Button */}
       <button
-        onClick={() => setAuthModal(true)}
+        onClick={() => {
+          if (sessionUser) window.location.hash = sessionUser.accountType === 'business' ? '#business' : '#account';
+          else setAuthModal(true);
+        }}
         className="fixed top-24 right-6 z-50 px-4 py-2 rounded-full bg-slate-800/80 backdrop-blur-sm hover:bg-slate-700 text-white text-sm font-medium flex items-center gap-2 shadow-lg border border-white/10 transition-all lg:right-8"
         aria-label={user ? 'Il tuo account' : 'Accedi'}
       >
@@ -1173,6 +1226,9 @@ export default function App() {
 
       {/* WhatsApp Button */}
       <WhatsAppButton />
+
+      {/* 🤖 Comfort Advisor chatbot (recommendation wizard) */}
+      <ComfortAdvisor />
 
       {/* Phase 4: Marketing Components */}
       <Lazy><SmartPopupSystem /></Lazy>
