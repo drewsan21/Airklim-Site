@@ -17,8 +17,9 @@ pool.on('connect', () => {
 });
 
 pool.on('error', (err) => {
-  console.error('❌ Database error:', err);
-  process.exit(-1);
+  // Non uscire: un errore idle del pool (es. restart di Postgres) non deve
+  // uccidere il server; le query successive riconnettono automaticamente.
+  console.error('❌ Database pool error:', err.message);
 });
 
 // Query helper

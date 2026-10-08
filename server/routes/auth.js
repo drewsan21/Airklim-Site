@@ -9,7 +9,7 @@ const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
 const { body, validationResult } = require('express-validator');
 const { asyncHandler, AppError } = require('../middleware/errorHandler');
-const { auditLog } = require('../middleware/auditLogger');
+require('../middleware/auditLogger'); // audit middleware applicato globalmente in server.js
 const { trackFailedLogin } = require('../middleware/securityMonitor');
 const db = require('../config/database');
 const { sendWelcomeEmail, sendPasswordResetEmail } = require('../services/emailService');

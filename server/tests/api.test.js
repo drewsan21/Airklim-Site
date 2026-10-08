@@ -5,6 +5,15 @@
 
 const request = require('supertest');
 const jwt = require('jsonwebtoken');
+require('dotenv').config();
+
+// These tests require a live PostgreSQL database with seed data.
+// Start it (e.g. docker compose up -d db && node database/seed.js) and export
+// DATABASE_URL before running: npm run test:integration
+// Without a DB they are skipped instead of reporting false failures.
+const hasDb = Boolean(process.env.DATABASE_URL);
+describe.skip(!hasDb ? 'API integration (skipped: DATABASE_URL not set)' : 'API integration', () => {
+
 const app = require('../server');
 const { pool } = require('../config/database');
 
@@ -515,3 +524,5 @@ describe('Health Check', () => {
     expect(res.body.timestamp).toBeDefined();
   });
 });
+
+}); // end API integration describe

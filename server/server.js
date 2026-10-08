@@ -14,7 +14,6 @@ const cookieParser = require('cookie-parser');
 const mongoSanitize = require('express-mongo-sanitize');
 const xss = require('xss-clean');
 const hpp = require('hpp');
-const winston = require('winston');
 
 // Import routes
 const authRoutes = require('./routes/auth');
@@ -94,14 +93,6 @@ const authLimiter = rateLimit({
   windowMs: 15 * 60 * 1000,
   max: 5,
   message: { error: 'Troppi tentativi di login, riprova tra 15 minuti' },
-  standardHeaders: true,
-  legacyHeaders: false
-});
-
-const apiLimiter = rateLimit({
-  windowMs: 1 * 60 * 1000, // 1 minute
-  max: 60,
-  message: { error: 'Limite API superato' },
   standardHeaders: true,
   legacyHeaders: false
 });
