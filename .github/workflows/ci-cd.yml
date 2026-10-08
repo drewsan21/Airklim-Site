@@ -96,8 +96,68 @@ jobs:
     - name: Type-check and build
       run: npm run build
 
-  build:
+  docker-smoke:
+    name: Docker Compose smoke test
     needs: [test, frontend]
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v3
+
+    # Build images exactly as they would be built for deployment.
+    # server/Dockerfile gates the backend image on `npm test` passing.
+    - name: Build all images
+      run: docker compose build
+
+    # One-shot seeder service creates schema + seed data and exits 0.
+    - name: Run database seeder
+      run: docker compose run --rm seeder
+
+    - name: Start stack
+      run: docker compose up -d
+
+    - name: Wait for backend healthcheck to report healthy
+      run: |
+        for i in $(seq 1 60); do
+          status=$(docker inspect --format '{{.State.Health.Status}}' airklim-backend 2>/dev/null || echo starting)
+          echo "attempt $i: backend=$status"
+          if [ "$status" = "healthy" ]; then exit 0; fi
+          sleep 5
+        done
+        echo "::error::backend never became healthy"
+        docker compose logs backend
+        exit 1
+
+    - name: Verify /health endpoint responds 200
+      run: |
+        for i in $(seq 1 12); do
+          code=$(curl -s -o /dev/null -w '%{http_code}' http://localhost:3000/health || echo 000)
+          echo "attempt $i: backend /health HTTP $code"
+          if [ "$code" = "200" ]; then exit 0; fi
+          sleep 5
+        done
+        echo "::error::/health never returned 200"
+        docker compose logs backend
+        exit 1
+
+    - name: Verify frontend is served by nginx
+      run: |
+        for i in $(seq 1 12); do
+          code=$(curl -s -o /dev/null -w '%{http_code}' http://localhost:8081/ || echo 000)
+          echo "attempt $i: frontend HTTP $code"
+          if [ "$code" = "200" ]; then exit 0; fi
+          sleep 5
+        done
+        echo "::error::frontend never responded 200"
+        docker compose logs frontend
+        exit 1
+
+    - name: Show final container states
+      if: always()
+      run: docker ps -a --format 'table {{.Names}}\t{{.Status}}'
+
+  build:
+    needs: [test, frontend, docker-smoke]
     runs-on: ubuntu-latest
     if: github.ref == 'refs/heads/main'
     

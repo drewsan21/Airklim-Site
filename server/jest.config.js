@@ -13,7 +13,7 @@ module.exports = {
   projects: [
     {
       displayName: 'unit',
-      testMatch: ['<rootDir>/tests/unit.test.js', '<rootDir>/tests/routes.unit.test.js'],
+      testMatch: ['<rootDir>/tests/unit.test.js', '<rootDir>/tests/routes.unit.test.js', '<rootDir>/tests/crud-extra.unit.test.js'],
       setupFiles: ['<rootDir>/tests/jest.setup.js'],
       testEnvironment: 'node',
     },
